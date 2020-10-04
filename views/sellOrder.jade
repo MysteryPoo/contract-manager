@@ -1,0 +1,85 @@
+extends layout
+
+block content
+  div(class="uk-flex uk-flex-center")
+    h1= title
+  form(action="/sellContract", method="post", class="uk-form-horizontal")
+    fieldset.uk-fieldset
+      div(class="uk-flex uk-flex-center")
+        div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+          h3(class="uk-card-title") Character Name
+          div(class="uk-form-controls")
+            input(class="uk-input", id="form-character-name", name="form-character-name", type="text", required="true")
+      div(class="uk-flex uk-flex-center")
+        div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+          h3(class="uk-card-title") Discord Name
+          div(class="uk-form-controls")
+            input(class="uk-input", id="form-discord-name", name="form-discord-name", type="text", required="true")
+      
+      ul(class="uk-subnav uk-subnav-pill", uk-switcher)
+        li
+          a(href="#") Ore
+        li
+          a(href="#") Minerals
+        li
+          a(href="#") Planetary Materials
+        li
+          a(href="#") Salvage
+        li
+          a(href="#") Datacores
+      
+      ul(class="uk-switcher uk-margin")
+        li
+          div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            each val, key in ores
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                  p Price Offered: #{val.toLocaleString(undefined)} ISK
+                  label(class="uk-form-label", for="form-#{key}") Units
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0")
+        li
+          div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            each val, key in minerals
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                  p Price Offered: #{val.toLocaleString(undefined)} ISK
+                  label(class="uk-form-label", for="form-#{key}") Units
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0")
+        li
+          div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            each val, key in planetary
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                  p Price Offered: #{val.toLocaleString(undefined)} ISK
+                  label(class="uk-form-label", for="form-#{key}") Units
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0")
+        li
+          div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            each val, key in salvage
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                  p Price Offered: #{val.toLocaleString(undefined)} ISK
+                  label(class="uk-form-label", for="form-#{key}") Units
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0")
+        li
+          div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            each val, key in datacores
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                  p Price Offered: #{val.toLocaleString(undefined)} ISK
+                  label(class="uk-form-label", for="form-#{key}") Units
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0")
+
+      div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+        div(class="uk-form-controls")
+            input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Calculate and Preview Order")
