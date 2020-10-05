@@ -95,6 +95,15 @@ router.post('/', async function(req, res, next) {
 router.post('/confirm', async function(req, res, next) {
     const ticketNumber = req.body.formTicketNumber;
 
+    const configRefQuery = await db.collection('Settings').doc('Config').get();
+    if (configRefQuery.empty) {
+        let error = "Fatal error: No server configuration found.";
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const config = configRefQuery.data();
+
     const orderRefQuery = await db.collection('Buy-Orders').where("TicketNumber", "==", Number(ticketNumber)).get();
     if (orderRefQuery.empty) {
         let error = `Cannot find order with ticket number: ${ticketNumber}`;
@@ -172,6 +181,7 @@ router.post('/confirm', async function(req, res, next) {
 
     res.render('buyContract', {
         title: 'Buy Contract',
+        contractContact: config['ContractContact'],
         status: "Pending",
         ticket: ticketNumber,
         total: priceTotal,

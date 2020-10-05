@@ -111,6 +111,7 @@ router.post('/accept', async function(req, res, next) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
         res.send(error);
+        return;
     }
     const config = configRefQuery.data();
 

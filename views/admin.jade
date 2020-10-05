@@ -3,7 +3,7 @@ extends layout
 block content
     h1 Set Base Prices
     h2 And Weights
-    form(action="", method="post", class="uk-form-horizontal")
+    form(method="post", class="uk-form-horizontal")
         fieldset.uk-fieldset
             legend.uk-legend Set Prices
             
@@ -28,7 +28,7 @@ block content
                         div(class="uk-card uk-card-default uk-card-body")
                             h3(class="uk-card-title") Password
                             div(class="uk-form-controls")
-                                input(class="uk-input", id="form-password", name="form-password", type="password")
+                                input(class="uk-input", id="form-password", name="form-password", type="password", required="true")
                         
                         div(class="uk-card uk-card-default uk-card-body")
                             h3(class="uk-card-title") Sell Order Weight
@@ -53,52 +53,52 @@ block content
                         each val, key in ores
                             div(class="uk-card uk-card-secondary uk-card-body")
                                 h3(class="uk-card-title") #{key}
-                                img(width="100", height="", alt="", uk-img="data-src:images/#{key}.png" class="uk-svg")
+                                img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in minerals
                             div(class="uk-card uk-card-secondary uk-card-body")
                                 h3(class="uk-card-title") #{key}
-                                img(width="100", height="", alt="", uk-img="data-src:images/#{key}.png" class="uk-svg")
+                                img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in planetary
                             div(class="uk-card uk-card-secondary uk-card-body")
                                 h3(class="uk-card-title") #{key}
-                                img(width="100", height="", alt="", uk-img="data-src:images/#{key}.png" class="uk-svg")
+                                img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in salvage
                             div(class="uk-card uk-card-secondary uk-card-body")
                                 h3(class="uk-card-title") #{key}
-                                img(width="100", height="", alt="", uk-img="data-src:images/#{key}.png" class="uk-svg")
+                                img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in datacores
                             div(class="uk-card uk-card-secondary uk-card-body")
                                 h3(class="uk-card-title") #{key}
-                                img(width="100", height="", alt="", uk-img="data-src:images/#{key}.png" class="uk-svg")
+                                img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
             div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
                 div(class="uk-form-controls")
-                    input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Set Prices")
+                    input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Set Prices", formaction="")
 

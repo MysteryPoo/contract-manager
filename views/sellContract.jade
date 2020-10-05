@@ -2,10 +2,12 @@ extends layout
 
 block content
     if status === "Pending"
-        div(class="uk-card uk-card-success uk-card-body uk-width-1-1")
+        div(class="uk-card uk-card-default uk-card-body")
+            h3(class="uk-card-title") Send Contract to: #{contractContact}
+        div(class="uk-card uk-card-primary uk-card-body")
             h3(class="uk-card-title") Ticket Number: #{ticket}
             p (Please put this in your Contract Description)
-    div(class="uk-card uk-card-success uk-card-body uk-width-1-1")
+    div(class="uk-card uk-card-primary uk-card-body")
         h3.uk-card-title You Will Receive #{Math.round(total).toLocaleString(undefined)} ISK
         h4 Fees to cover: #{Math.round(total*0.04 + total*0.025).toLocaleString(undefined)} ISK
     
