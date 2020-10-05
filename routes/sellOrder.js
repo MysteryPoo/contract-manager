@@ -8,9 +8,20 @@ const db = admin.firestore();
 
 router.get('/', async function(req, res, next) {
 
+  const configRefQuery = await db.collection('Settings').doc('Config').get();
+    if (configRefQuery.empty) {
+        let error = "Fatal error: No server configuration found.";
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const config = configRefQuery.data();
+
   const priceRefQuery = await db.collection('Price-List').orderBy("DateTime", "desc").limit(1).get();
   if (priceRefQuery.empty) {
-    console.log('No matching documents.');
+    const error = "Fatal error: No price list found.";
+    console.log(error);
+    res.send(error);
     return;
   }
 
@@ -51,7 +62,7 @@ router.get('/', async function(req, res, next) {
   }
 
   res.render('sellOrder', {
-    title: 'GenFed Material (Sell) Contract',
+    title: `${config['Organization']} Material (Sell) Contract`,
     ores: oreValues,
     minerals: mineralValues,
     planetary: planetaryValues,
@@ -64,7 +75,9 @@ router.get('/', async function(req, res, next) {
 router.get('/csv', async function(req, res, next) {
   const priceRefQuery = await db.collection('Price-List').orderBy("DateTime", "desc").limit(1).get();
   if (priceRefQuery.empty) {
-    console.log('No matching documents.');
+    const error = "Fatal error: No price list found.";
+    console.log(error);
+    res.send(error);
     return;
   }
 

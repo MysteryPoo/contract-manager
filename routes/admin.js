@@ -9,11 +9,11 @@ const db = admin.firestore();
 router.get('/', async function(req, res, next) {
     const priceRefQuery = await db.collection('Price-List').orderBy("DateTime", "desc").limit(1).get();
     if (priceRefQuery.empty) {
-        console.log('No matching documents.');
-        return;
+        const error = "No price list found.";
+        console.log(error);
     }
 
-    const priceRef = priceRefQuery.docs[0].data();
+    const priceRef = priceRefQuery.empty ? {} : priceRefQuery.docs[0].data();
 
     let oreValues = {};
     let mineralValues = {};
@@ -27,27 +27,27 @@ router.get('/', async function(req, res, next) {
 
     for (ore of materials.ores) {
         let oreNoSpace = ore.replace(/ /g, "");
-        oreValues[oreNoSpace] = priceRef[ore];
+        oreValues[oreNoSpace] = priceRef[ore] || 0;
     }
 
     for (mineral of materials.minerals) {
         let mineralNoSpace = mineral.replace(/ /g, "");
-        mineralValues[mineralNoSpace] = priceRef[mineral];
+        mineralValues[mineralNoSpace] = priceRef[mineral] || 0;
     }
 
     for (planetary of materials.planetary) {
         let planetaryNoSpace = planetary.replace(/ /g, "");
-        planetaryValues[planetaryNoSpace] = priceRef[planetary];
+        planetaryValues[planetaryNoSpace] = priceRef[planetary] || 0;
     }
 
     for (salvage of materials.salvage) {
         let salvageNoSpace = salvage.replace(/ /g, "");
-        salvageValues[salvageNoSpace] = priceRef[salvage];
+        salvageValues[salvageNoSpace] = priceRef[salvage] || 0;
     }
 
     for (datacore of materials.datacores) {
         let datacoreNoSpace = datacore.replace(/ /g, "");
-        datacoreValues[datacoreNoSpace] = priceRef[datacore];
+        datacoreValues[datacoreNoSpace] = priceRef[datacore] || 0;
     }
 
     res.render('admin', {
@@ -69,8 +69,9 @@ router.post('/', async function(req, res, next) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
         res.send(error);
+        return;
     }
-    const config = configRefQuery.docs[0].data();
+    const config = configRefQuery.data();
 
     if (req.body['form-password'] === config['Password']) {
         console.log("Password OK");
