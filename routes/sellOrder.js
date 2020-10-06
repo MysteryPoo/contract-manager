@@ -70,79 +70,44 @@ router.get('/csv', async function(req, res, next) {
     res.send(error);
     return;
   }
-
   const priceRef = priceRefQuery.docs[0].data();
 
-  let oreValues = {};
-  let mineralValues = {};
-  let planetaryValues = {};
-  let salvageValues = {};
-  let datacoreValues = {};
+  const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
+  if (demandRefQuery.empty) {
+    const error = "Fatal error: No demand list found.";
+    console.log(error);
+    res.send(error);
+    return;
+  }
+  const demandRef = demandRefQuery.docs[0].data();
+
+  let returnValue = "";
 
   let sellWeight = Number(priceRef['Sell Weight']);
   let buyWeight = Number(priceRef['Buy Weight']);
 
-  for (ore of materials.ores) {
-    let oreNoSpace = ore.replace(/ /g, "");
-    oreValues[oreNoSpace] = priceRef[ore];
+  for (let category in materials) {
+    for (let material of materials[category]) {
+      returnValue += material + ',';
+    }
   }
-
-  for (mineral of materials.minerals) {
-      let mineralNoSpace = mineral.replace(/ /g, "");
-      mineralValues[mineralNoSpace] = priceRef[mineral];
-  }
-
-  for (planetary of materials.planetary) {
-      let planetaryNoSpace = planetary.replace(/ /g, "");
-      planetaryValues[planetaryNoSpace] = priceRef[planetary];
-  }
-
-  for (salvage of materials.salvage) {
-      let salvageNoSpace = salvage.replace(/ /g, "");
-      salvageValues[salvageNoSpace] = priceRef[salvage];
-  }
-
-  for (datacore of materials.datacores) {
-      let datacoreNoSpace = datacore.replace(/ /g, "");
-      datacoreValues[datacoreNoSpace] = priceRef[datacore];
-  }
-
-  let returnValue = "";
-
-  for (const [key, value] of Object.entries(oreValues)) {
-    returnValue += key + ",";
-  }
-  for (const [key, value] of Object.entries(mineralValues)) {
-    returnValue += key + ",";
-  }
-  for (const [key, value] of Object.entries(planetaryValues)) {
-    returnValue += key + ",";
-  }
-  for (const [key, value] of Object.entries(salvageValues)) {
-    returnValue += key + ",";
-  }
-  for (const [key, value] of Object.entries(datacoreValues)) {
-    returnValue += key + ",";
-  }
-  returnValue += "Sell Weight, Buy Weight, DateTime";
+  returnValue += "Sell Weight, Buy Weight, Price-DateTime, Demand-DateTime";
   returnValue += "\n";
 
-  for (const [key, value] of Object.entries(oreValues)) {
-    returnValue += value + ",";
+  for (let category in materials) {
+    for (let material of materials[category]) {
+      returnValue += priceRef[material] + ',';
+    }
   }
-  for (const [key, value] of Object.entries(mineralValues)) {
-    returnValue += value + ",";
+  returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}, ${demandRef['DateTime']}`;
+  returnValue += "\n";
+
+  for (let category in materials) {
+    for (let material of materials[category]) {
+      returnValue += demandRef['Demands'][demandRef[material]] + ',';
+    }
   }
-  for (const [key, value] of Object.entries(planetaryValues)) {
-    returnValue += value + ",";
-  }
-  for (const [key, value] of Object.entries(salvageValues)) {
-    returnValue += value + ",";
-  }
-  for (const [key, value] of Object.entries(datacoreValues)) {
-    returnValue += value + ",";
-  }
-  returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}`;
+  returnValue += 'N/A, N/A, N/A, N/A';
 
   res.set('Content-Type', 'text/plain');
   res.send(returnValue);
