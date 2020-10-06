@@ -120,7 +120,7 @@ router.post('/confirm', async function(req, res, next) {
         res.send(error);
     }
 
-    await db.collection('Buy-Orders').doc(ticketNumber).update({
+    await db.collection(collections['Buy-Orders']).doc(ticketNumber).update({
         'Status': 'Pending'
     });
     console.log(`Ticket number (${ticketNumber})(Buy) confirmed and moved to 'Pending' status.`);
