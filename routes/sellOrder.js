@@ -104,7 +104,7 @@ router.get('/csv', async function(req, res, next) {
 
   for (let category in materials) {
     for (let material of materials[category]) {
-      returnValue += demandRef['Demands'][demandRef[material]] + ',';
+      returnValue += demandRef[material] + ',';
     }
   }
   returnValue += 'N/A, N/A, N/A, N/A';
