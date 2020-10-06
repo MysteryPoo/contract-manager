@@ -10,13 +10,13 @@ const db = admin.firestore();
 router.get('/', async function(req, res, next) {
 
   const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
-    if (configRefQuery.empty) {
-        let error = "Fatal error: No server configuration found.";
-        console.log(error);
-        res.send(error);
-        return;
-    }
-    const config = configRefQuery.data();
+  if (configRefQuery.empty) {
+    let error = "Fatal error: No server configuration found.";
+    console.log(error);
+    res.send(error);
+    return;
+  }
+  const config = configRefQuery.data();
 
   const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
   if (priceRefQuery.empty) {
