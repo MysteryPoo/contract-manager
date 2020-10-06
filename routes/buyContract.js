@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const materials = require('../materials')
+const materials = require('../materials');
+const collections = require('../collections');
 
 const admin = require('firebase-admin');
 
@@ -8,14 +9,14 @@ const db = admin.firestore();
 
 router.post('/', async function(req, res, next) {
     let ticketNumber = 1;
-    const ordersRefQuery = await db.collection('Buy-Orders').orderBy("TicketNumber", "desc").limit(1).get();
+    const ordersRefQuery = await db.collection(collections['Buy-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
     let orderRef = undefined;
     if (!ordersRefQuery.empty) {
         orderRef = ordersRefQuery.docs[0].data();
         ticketNumber = Number(orderRef['TicketNumber']) + 1;
     }
 
-    const priceRefQuery = await db.collection('Price-List').orderBy("DateTime", "desc").limit(1).get();
+    const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
     
     let priceRef = priceRefQuery.docs[0].data();
 
@@ -81,7 +82,7 @@ router.post('/', async function(req, res, next) {
 
 
     let success = true;
-    await db.collection('Buy-Orders').doc(ticketNumber.toString()).set(order);
+    await db.collection(collections['Buy-Orders']).doc(ticketNumber.toString()).set(order);
 
     res.render('buyContract', {
         title: 'Buy Contract',
@@ -95,7 +96,7 @@ router.post('/', async function(req, res, next) {
 router.post('/confirm', async function(req, res, next) {
     const ticketNumber = req.body.formTicketNumber;
 
-    const configRefQuery = await db.collection('Settings').doc('Config').get();
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
@@ -104,7 +105,7 @@ router.post('/confirm', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
-    const orderRefQuery = await db.collection('Buy-Orders').where("TicketNumber", "==", Number(ticketNumber)).get();
+    const orderRefQuery = await db.collection(collections['Buy-Orders']).where("TicketNumber", "==", Number(ticketNumber)).get();
     if (orderRefQuery.empty) {
         let error = `Cannot find order with ticket number: ${ticketNumber}`;
         console.log(error);
@@ -125,7 +126,7 @@ router.post('/confirm', async function(req, res, next) {
     console.log(`Ticket number (${ticketNumber})(Buy) confirmed and moved to 'Pending' status.`);
 
 
-    const priceRefQuery = await db.collection('Price-List').where('DateTime', "==", orderRef['DateTime']).get();
+    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['DateTime']).get();
     if (priceRefQuery.empty) {
         let error = `Cannot find price reference sheet dated: ${orderRef['DateTime']}`;
         console.log(error);
