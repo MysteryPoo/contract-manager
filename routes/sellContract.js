@@ -18,13 +18,14 @@ router.post('/', async function(req, res, next) {
     }
 
     const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
-    
-    let priceRef = priceRefQuery.docs[0].data();
+    const priceRef = priceRefQuery.docs[0].data();
 
-    let dateTime = priceRef['DateTime'];
+    const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
+    const demandRef = demandRefQuery.docs[0].data();
 
     let order = {
-        'DateTime': dateTime,
+        'Price-DateTime': priceRef['DateTime'],
+        'Demand-DateTime': demandRef['DateTime'],
         'CharacterName': req.body['form-character-name'],
         'DiscordName': req.body['form-discord-name'],
         'TicketNumber': ticketNumber,
@@ -35,48 +36,14 @@ router.post('/', async function(req, res, next) {
 
     let priceTotal = 0;
 
-    for (ore of materials.ores) {
-        let oreNoSpace = ore.replace(/ /g, "");
-        priceTotal += Number(req.body[`form-${oreNoSpace}`]) * priceRef[ore];
-        order[ore] = Number(req.body[`form-${oreNoSpace}`]);
-        if (order[ore] > 0) {
-            materialList[oreNoSpace] = order[ore];
-        }
-    }
-
-    for (mineral of materials.minerals) {
-        let mineralNoSpace = mineral.replace(/ /g, "");
-        priceTotal += Number(req.body[`form-${mineralNoSpace}`]) * priceRef[mineral];
-        order[mineral] = Number(req.body[`form-${mineralNoSpace}`]);
-        if (order[mineral] > 0) {
-            materialList[mineralNoSpace] = order[mineral];
-        }
-    }
-
-    for (planetary of materials.planetary) {
-        let planetaryNoSpace = planetary.replace(/ /g, "");
-        priceTotal += Number(req.body[`form-${planetaryNoSpace}`]) * priceRef[planetary];
-        order[planetary] = Number(req.body[`form-${planetaryNoSpace}`]);
-        if (order[planetary] > 0) {
-            materialList[planetaryNoSpace] = order[planetary];
-        }
-    }
-
-    for (salvage of materials.salvage) {
-        let salvageNoSpace = salvage.replace(/ /g, "");
-        priceTotal += Number(req.body[`form-${salvageNoSpace}`]) * priceRef[salvage];
-        order[salvage] = Number(req.body[`form-${salvageNoSpace}`]);
-        if (order[salvage] > 0) {
-            materialList[salvageNoSpace] = order[salvage];
-        }
-    }
-
-    for (datacore of materials.datacores) {
-        let datacoreNoSpace = datacore.replace(/ /g, "");
-        priceTotal += Number(req.body[`form-${datacoreNoSpace}`]) * priceRef[datacore];
-        order[datacore] = Number(req.body[`form-${datacoreNoSpace}`]);
-        if (order[datacore] > 0) {
-            materialList[datacoreNoSpace] = order[datacore];
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            priceTotal += Number(req.body[`form-${materialNoSpace}`]) * priceRef[material] * demandRef['Demands'][demandRef[material]];
+            order[material] = Number(req.body[`form-${materialNoSpace}`]);
+            if (order[material] > 0) {
+                materialList[materialNoSpace] = order[material];
+            }
         }
     }
     priceTotal *= priceRef['Sell Weight'];
@@ -119,62 +86,41 @@ router.post('/confirm', async function(req, res, next) {
         res.send(error);
     }
 
-    await db.collection('Sell-Orders').doc(ticketNumber).update({
+    await db.collection(collections['Sell-Orders']).doc(ticketNumber).update({
         'Status': 'Pending'
     });
     console.log(`Ticket number (${ticketNumber})(Sell) confirmed and moved to 'Pending' status.`);
 
 
-    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['DateTime']).get();
+    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['Price-DateTime']).get();
     if (priceRefQuery.empty) {
-        let error = `Cannot find price reference sheet dated: ${orderRef['DateTime']}`;
+        let error = `Cannot find price reference sheet dated: ${orderRef['Price-DateTime']}`;
         console.log(error);
         res.send(error);
         return;
     }
     const priceRef = priceRefQuery.docs[0].data();
 
+    const demandRefQuery = await db.collection(collections['Demand-List']).where('DateTime', "==", orderRef['Demand-DateTime']).get();
+    if (demandRefQuery.empty) {
+        let error = `Cannot find demand reference sheet dated: ${orderRef['Demand-DateTime']}`;
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const demandRef = demandRefQuery.docs[0].data();
+
     let priceTotal = 0;
 
     let materialOrder = {};
 
-    for (material of materials.ores) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-        }
-    }
-
-    for (material of materials.minerals) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-        }
-    }
-
-    for (material of materials.planetary) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-        }
-    }
-
-    for (material of materials.salvage) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-        }
-    }
-
-    for (material of materials.datacores) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            if (orderRef[material] !== 0) {
+                materialOrder[materialNoSpace] = orderRef[material];
+                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demandRef[material]];
+            }
         }
     }
     priceTotal *= priceRef['Sell Weight'];

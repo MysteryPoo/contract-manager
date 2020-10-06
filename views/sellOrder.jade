@@ -17,68 +17,23 @@ block content
             input(class="uk-input", id="form-discord-name", name="form-discord-name", type="text", required="true")
       
       ul(class="uk-subnav uk-subnav-pill", uk-switcher)
-        li
-          a(href="#") Ore
-        li
-          a(href="#") Minerals
-        li
-          a(href="#") Planetary Materials
-        li
-          a(href="#") Salvage
-        li
-          a(href="#") Datacores
+        each list, material in materialList
+          li
+            a(href="#") #{material}
       
       ul(class="uk-switcher uk-margin")
-        li
-          div(class="uk-grid uk-child-width-auto uk-animation-fade")
-            each val, key in ores
-                div(class="uk-card uk-card-secondary uk-card-body")
-                  h3.uk-card-title #{key}
-                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                  p Price Offered: #{val.toLocaleString(undefined)} ISK
-                  label(class="uk-form-label", for="form-#{key}") Units
-                  div(class="uk-form-controls")
-                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
-        li
-          div(class="uk-grid uk-child-width-auto uk-animation-fade")
-            each val, key in minerals
-                div(class="uk-card uk-card-secondary uk-card-body")
-                  h3.uk-card-title #{key}
-                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                  p Price Offered: #{val.toLocaleString(undefined)} ISK
-                  label(class="uk-form-label", for="form-#{key}") Units
-                  div(class="uk-form-controls")
-                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
-        li
-          div(class="uk-grid uk-child-width-auto uk-animation-fade")
-            each val, key in planetary
-                div(class="uk-card uk-card-secondary uk-card-body")
-                  h3.uk-card-title #{key}
-                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                  p Price Offered: #{val.toLocaleString(undefined)} ISK
-                  label(class="uk-form-label", for="form-#{key}") Units
-                  div(class="uk-form-controls")
-                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
-        li
-          div(class="uk-grid uk-child-width-auto uk-animation-fade")
-            each val, key in salvage
-                div(class="uk-card uk-card-secondary uk-card-body")
-                  h3.uk-card-title #{key}
-                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                  p Price Offered: #{val.toLocaleString(undefined)} ISK
-                  label(class="uk-form-label", for="form-#{key}") Units
-                  div(class="uk-form-controls")
-                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
-        li
-          div(class="uk-grid uk-child-width-auto uk-animation-fade")
-            each val, key in datacores
-                div(class="uk-card uk-card-secondary uk-card-body")
-                  h3.uk-card-title #{key}
-                  img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                  p Price Offered: #{val.toLocaleString(undefined)} ISK
-                  label(class="uk-form-label", for="form-#{key}") Units
-                  div(class="uk-form-controls")
-                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
+        each list, material in materialList
+          li
+            div(class="uk-grid uk-child-width-auto uk-animation-fade")
+              each val, key in list
+                  div(class="uk-card uk-card-secondary uk-card-body")
+                    h3.uk-card-title #{key}
+                    img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                    p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
+                    p Demand: #{val['demand']}
+                    label(class="uk-form-label", for="form-#{key}") Units
+                    div(class="uk-form-controls")
+                      input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
 
       div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
         div(class="uk-form-controls")
