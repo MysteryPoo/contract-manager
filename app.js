@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
+app.use('/setPrices', adminRouter);
 app.use('/setDemands', demandRouter);
 app.use('/sellContract', sellRouter);
 app.use('/buyContract', buyContractRouter);
