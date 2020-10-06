@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const materials = require('../materials');
+const collections = require('../collections');
 const admin = require('firebase-admin');
 
 const db = admin.firestore();
@@ -14,7 +15,7 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
 
     let typeNoCase = req.params.type.charAt(0).toUpperCase() + req.params.type.slice(1).toLowerCase();
 
-    const orderRefQuery = await db.collection(`${typeNoCase}-Orders`).where('TicketNumber', "==", Number(req.params.ticketNumber)).get();
+    const orderRefQuery = await db.collection(collections[`${typeNoCase}-Orders`]).where('TicketNumber', "==", Number(req.params.ticketNumber)).get();
     if (orderRefQuery.empty) {
         let error = `Cannot find order with ticket number: ${req.params.ticketNumber}`;
         console.log(error);
@@ -23,7 +24,7 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
     }
     let orderRef = orderRefQuery.docs[0].data();
 
-    const priceRefQuery = await db.collection('Price-List').where('DateTime', "==", orderRef['DateTime']).get();
+    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['DateTime']).get();
     if (priceRefQuery.empty) {
         let error = `Cannot find price reference sheet dated: ${orderRef['DateTime']}`;
         console.log(error);
@@ -106,7 +107,7 @@ router.post('/accept', async function(req, res, next) {
     const ticketNumber = Number(req.body.formTicketNumber);
     const password = req.body.formPassword;
 
-    const configRefQuery = await db.collection('Settings').doc('Config').get();
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
@@ -116,7 +117,7 @@ router.post('/accept', async function(req, res, next) {
     const config = configRefQuery.data();
 
     if (password === config['Password']) {
-        const orderRefQuery = await db.collection(`${contractType}-Orders`).where('TicketNumber', "==", ticketNumber).get();
+        const orderRefQuery = await db.collection(collections[`${contractType}-Orders`]).where('TicketNumber', "==", ticketNumber).get();
         if (orderRefQuery.empty) {
             let error = `Cannot find order with ticket number: ${ticketNumber}`;
             console.log(error);
@@ -131,7 +132,7 @@ router.post('/accept', async function(req, res, next) {
             res.send(error);
         }
     
-        await db.collection(`${contractType}-Orders`).doc(ticketNumber.toString()).update({
+        await db.collection(collections[`${contractType}-Orders`]).doc(ticketNumber.toString()).update({
             'Status': 'Accepted'
         });
         message = `Ticket number (${ticketNumber})(${contractType}) accepted and moved to 'Accepted' status.`;
@@ -151,7 +152,7 @@ router.post('/reject', async function(req, res, next) {
     const ticketNumber = Number(req.body.formTicketNumber);
     const password = req.body.formPassword;
 
-    const configRefQuery = await db.collection('Settings').doc('Config').get();
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
@@ -160,7 +161,7 @@ router.post('/reject', async function(req, res, next) {
     const config = configRefQuery.data();
 
     if (password === config['Password']) {
-        const orderRefQuery = await db.collection(`${contractType}-Orders`).where('TicketNumber', "==", ticketNumber).get();
+        const orderRefQuery = await db.collection(collections[`${contractType}-Orders`]).where('TicketNumber', "==", ticketNumber).get();
         if (orderRefQuery.empty) {
             let error = `Cannot find order with ticket number: ${ticketNumber}`;
             console.log(error);
@@ -175,7 +176,7 @@ router.post('/reject', async function(req, res, next) {
             res.send(error);
         }
     
-        await db.collection(`${contractType}-Orders`).doc(ticketNumber.toString()).update({
+        await db.collection(collections[`${contractType}-Orders`]).doc(ticketNumber.toString()).update({
             'Status': 'Rejected'
         });
         message = `Ticket number (${ticketNumber})(${contractType}) rejected and moved to 'Rejected' status.`;

@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const materials = require('../materials');
+const collections = require('../collections');
 
 const admin = require('firebase-admin');
 
 const db = admin.firestore();
 
 router.get('/', async function(req, res, next) {
-    const priceRefQuery = await db.collection('Price-List').orderBy("DateTime", "desc").limit(1).get();
+    const priceRefQuery = await db.collection(collections["Price-List"]).orderBy("DateTime", "desc").limit(1).get();
     if (priceRefQuery.empty) {
         const error = "No price list found.";
         console.log(error);
@@ -64,7 +65,7 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
     let message = "OK";
 
-    const configRefQuery = await db.collection('Settings').doc('Config').get();
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
         console.log(error);
@@ -77,7 +78,7 @@ router.post('/', async function(req, res, next) {
         console.log("Password OK");
 
         const dateEntered = new Date().toISOString();
-        const docRef = db.collection('Price-List').doc(dateEntered);
+        const docRef = db.collection(collections["Price-List"]).doc(dateEntered);
 
         var priceList = {
             'DateTime': dateEntered,
