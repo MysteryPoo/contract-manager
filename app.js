@@ -12,6 +12,7 @@ admin.initializeApp({
 
 var indexRouter = require('./routes/menu');
 var adminRouter = require('./routes/admin');
+var demandRouter = require('./routes/setDemands');
 var sellRouter = require('./routes/sellContract');
 var buyContractRouter = require('./routes/buyContract');
 var sellOrderRouter = require('./routes/sellOrder');
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
+app.use('/setDemands', demandRouter);
 app.use('/sellContract', sellRouter);
 app.use('/buyContract', buyContractRouter);
 app.use('/lookup', lookupRouter);

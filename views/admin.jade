@@ -48,6 +48,7 @@ block content
                             label(class="uk-form-label", for="form-buy-weight") Buy Weight
                             div(class="uk-form-controls")
                                 input(class="uk-range", type="range", id="form-buy-weight", name="form-buy-weight", value="#{buyWeight}", min="1", max="2", step="0.01", onchange="updateBuyWeight(this.value, true);")
+                
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in ores
