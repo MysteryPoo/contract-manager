@@ -57,7 +57,7 @@ block content
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}", required="true")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in minerals
@@ -67,7 +67,7 @@ block content
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}", required="true")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in planetary
@@ -77,7 +77,7 @@ block content
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}", required="true")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in salvage
@@ -87,7 +87,7 @@ block content
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}", required="true")
                 li
                     div(class="uk-grid uk-child-width-auto uk-animation-fade")
                         each val, key in datacores
@@ -97,7 +97,7 @@ block content
                                 p Current Price: #{val.toLocaleString(undefined)} ISK
                                 label(class="uk-form-label", for="form-#{key}") New Price
                                 div(class="uk-form-controls")
-                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}")
+                                    input(class="uk-input", id="form-#{key}", name="form-#{key}", type="float", min="0", value="#{val}", required="true")
             div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
                 div(class="uk-form-controls")
                     input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Set Prices", formaction="")
