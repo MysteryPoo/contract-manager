@@ -91,7 +91,6 @@ router.post('/confirm', async function(req, res, next) {
     });
     console.log(`Ticket number (${ticketNumber})(Sell) confirmed and moved to 'Pending' status.`);
 
-
     const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['Price-DateTime']).get();
     if (priceRefQuery.empty) {
         let error = `Cannot find price reference sheet dated: ${orderRef['Price-DateTime']}`;

@@ -15,7 +15,7 @@ block content
         each val, key in materialOrder
             if val > 0
                 div(class="uk-card uk-card-secondary uk-card-body")
-                    h3.uk-card-title #{key}
+                    h3(class="uk-card-title") #{key}
                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                     p Units: #{val}
     
