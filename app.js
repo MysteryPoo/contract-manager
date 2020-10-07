@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const admin = require('firebase-admin');
 
-const serviceAccount = require('./credentials/ppu-backend-firebase-adminsdk-79qug-f6c8f4d081.json');
+const serviceAccount = require('./credentials/credential.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
