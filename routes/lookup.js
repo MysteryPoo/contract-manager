@@ -14,80 +14,55 @@ router.get('/:ticketNumber', async function(req, res, next) {
 router.get('/:type/:ticketNumber', async function(req, res, next) {
 
     let typeNoCase = req.params.type.charAt(0).toUpperCase() + req.params.type.slice(1).toLowerCase();
+    const ticketNumber = req.params.ticketNumber;
 
-    const orderRefQuery = await db.collection(collections[`${typeNoCase}-Orders`]).where('TicketNumber', "==", Number(req.params.ticketNumber)).get();
+    const orderRefQuery = await db.collection(collections[`${typeNoCase}-Orders`]).where("TicketNumber", "==", Number(ticketNumber)).get();
     if (orderRefQuery.empty) {
-        let error = `Cannot find order with ticket number: ${req.params.ticketNumber}`;
+        let error = `Cannot find order with ticket number: ${ticketNumber}`;
         console.log(error);
         res.send(error);
         return;
     }
-    let orderRef = orderRefQuery.docs[0].data();
+    const orderRef = orderRefQuery.docs[0].data();
 
-    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['DateTime']).get();
+    const priceRefQuery = await db.collection(collections['Price-List']).where('DateTime', "==", orderRef['Price-DateTime']).get();
     if (priceRefQuery.empty) {
-        let error = `Cannot find price reference sheet dated: ${orderRef['DateTime']}`;
+        let error = `Cannot find price reference sheet dated: ${orderRef['Price-DateTime']}`;
         console.log(error);
         res.send(error);
         return;
     }
-    let priceRef = priceRefQuery.docs[0].data();
+    const priceRef = priceRefQuery.docs[0].data();
+
+    const demandRefQuery = await db.collection(collections['Demand-List']).where('DateTime', "==", orderRef['Demand-DateTime']).get();
+    if (demandRefQuery.empty) {
+        let error = `Cannot find demand reference sheet dated: ${orderRef['Demand-DateTime']}`;
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const demandRef = demandRefQuery.docs[0].data();
 
     let priceTotal = 0;
 
     let materialOrder = {};
-    // TODO : This is stupid, do better
     let priceRefNoSpace = {};
 
-    for (material of materials.ores) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-            priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`];
-        }
-    }
-
-    for (material of materials.minerals) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-            priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`];
-        }
-    }
-
-    for (material of materials.planetary) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-            priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`];
-        }
-    }
-
-    for (material of materials.salvage) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-            priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`];
-        }
-    }
-
-    for (material of materials.datacores) {
-        let materialNoSpace = material.replace(/ /g, "");
-        if (orderRef[material] !== 0) {
-            materialOrder[materialNoSpace] = orderRef[material];
-            priceTotal += orderRef[material] * priceRef[material];
-            priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`];
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            if (orderRef[material] !== 0) {
+                materialOrder[materialNoSpace] = orderRef[material];
+                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demandRef[material]];
+                priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`] * demandRef['Demands'][demandRef[material]];
+            }
         }
     }
     priceTotal *= priceRef[`${typeNoCase} Weight`];
 
     res.render('lookup', {
         title: 'Contract Lookup',
-        ticketNumber: Number(req.params.ticketNumber),
+        ticketNumber: Number(ticketNumber),
         datetime: orderRef['DateTime'],
         contractType: typeNoCase,
         status: orderRef['Status'],
