@@ -7,7 +7,6 @@ const db = admin.firestore();
 
 router.get('/', async function(req, res, next) {
 
-    console.log(collections);
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
