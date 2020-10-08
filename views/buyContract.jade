@@ -8,8 +8,10 @@ block content
             h3(class="uk-card-title") Ticket Number: #{ticket}
             p (Please put this in your Contract Description)
     div(class="uk-card uk-card-primary uk-card-body")
-        h3.uk-card-title You Will Pay #{Math.round(total).toLocaleString(undefined)} ISK
+        h3.uk-card-title I Will Pay #{Math.round(total).toLocaleString(undefined)} ISK
+        p (Put this in the 'I Will Pay' box in the in-game contract)
         h4 Fees to cover: #{Math.round(total*0.04 + total*0.025).toLocaleString(undefined)} ISK
+        p (This is how much you need in your wallet for deposit/taxes)
     
     div(class="uk-grid uk-child-width-auto")
         each val, key in materialOrder
