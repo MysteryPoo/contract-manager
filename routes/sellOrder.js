@@ -110,6 +110,14 @@ router.get('/csv', async function(req, res, next) {
     }
   }
   returnValue += 'N/A, N/A, N/A, N/A';
+  returnValue += "\n";
+
+  for (let category in materials) {
+    for (let material of materials[category]) {
+      returnValue += demandRef['Demands'][demandRef[material]];
+    }
+  }
+  returnValue += 'N/A, N/A, N/A, N/A';
 
   res.set('Content-Type', 'text/plain');
   res.send(returnValue);
