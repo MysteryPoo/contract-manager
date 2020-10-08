@@ -23,19 +23,19 @@ block content
 
             ul(class="uk-switcher uk-margin")
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
-                        div(class="uk-card uk-card-default uk-card-body")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
+                        div(class="uk-card uk-card-body")
                             h3(class="uk-card-title") Password
                             div(class="uk-form-controls")
                                 input(class="uk-input", id="form-password", name="form-password", type="password", required="true")
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade", id="demand-list")
-                        div(class="uk-card uk-card-primary uk-card-body")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade", id="demand-list")
+                        div(class="uk-card uk-card-body")
                             button(class="uk-button uk-button-default", id="demand-list-add", onclick="addDemand();") Add Demand
                             input(type="hidden", id="demand-count", name="demand-count", value="#{Object.keys(demands).length}")
                         - let index = 1;
                         each val, key in demands
-                            div(class="uk-card uk-card-default uk-card-body", id="demand-#{index}")
+                            div(class="uk-card uk-card-body", id="demand-#{index}")
                                 label(class="uk-card-title", for="demand-#{index}-name") Name:
                                 input(class="uk-input", id="demand-#{index}-name", name="demand-#{index}-name", required="true", value="#{key}", onchange="updateOptionName(this, #{index - 1});")
                                 input(class="uk-input", type="float", id="demand-#{index}-valueText", name="demand-#{index}-valueText", value="#{val}", required="true", onchange="updateRange(this, #{index});")
@@ -43,9 +43,9 @@ block content
                                 button(class="uk-button uk-button-default", onclick="removeDemand(#{index});") Remove
                             - index += 1;
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                         each val, key in ores
-                            div(class="uk-card uk-card-secondary uk-card-body")
+                            div(class="uk-card uk-card-body")
                                 h3(class="uk-card-title") #{key}
                                 img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Demand: #{val} (#{demands[val]})
@@ -58,9 +58,9 @@ block content
                                             else
                                                 option #{demandName}
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                         each val, key in minerals
-                            div(class="uk-card uk-card-secondary uk-card-body")
+                            div(class="uk-card uk-card-body")
                                 h3(class="uk-card-title") #{key}
                                 img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Demand: #{val}
@@ -73,9 +73,9 @@ block content
                                             else
                                                 option #{demandName}
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                         each val, key in planetary
-                            div(class="uk-card uk-card-secondary uk-card-body")
+                            div(class="uk-card uk-card-body")
                                 h3(class="uk-card-title") #{key}
                                 img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Demand: #{val}
@@ -88,9 +88,9 @@ block content
                                             else
                                                 option #{demandName}
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                         each val, key in salvage
-                            div(class="uk-card uk-card-secondary uk-card-body")
+                            div(class="uk-card uk-card-body")
                                 h3(class="uk-card-title") #{key}
                                 img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Demand: #{val}
@@ -103,9 +103,9 @@ block content
                                             else
                                                 option #{demandName}
                 li
-                    div(class="uk-grid uk-child-width-auto uk-animation-fade")
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                         each val, key in datacores
-                            div(class="uk-card uk-card-secondary uk-card-body")
+                            div(class="uk-card uk-card-body")
                                 h3(class="uk-card-title") #{key}
                                 img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                                 p Current Demand: #{val}
@@ -118,7 +118,7 @@ block content
                                             else
                                                 option #{demandName}
 
-            div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+            div(class="uk-card uk-card-body uk-width-1-1")
                 div(class="uk-form-controls")
-                    input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Set Demands", formaction="")
+                    input(class="uk-input uk-button", id="form-submit", type="submit", value="Set Demands", formaction="")
 

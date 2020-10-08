@@ -2,27 +2,27 @@ extends layout
 
 block content
     div(class="uk-grid uk-child-width-auto")
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Character Name: #{characterName}
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Discord Name: #{discordName}
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Price Sheet Used
             p= priceDatetime
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Demand Sheet Used
             p= demandDateTime
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Type: #{contractType}
-        div(class="uk-card uk-card-default uk-card-body")
+        div(class="uk-card  uk-card-body")
             h3(class="uk-card-title") Status: #{status}
-    div(class="uk-grid uk-child-width-auto")
+    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
         each val, key in materialOrder
-          div(class="uk-card uk-card-secondary uk-card-body")
+          div(class="uk-card uk-card-body")
             h3.uk-card-title #{key}
             img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
             p Units: #{val} @ #{priceRef[key].toLocaleString(undefined)} ISK each
-    div(class="uk-card uk-card-default uk-card-body")
+    div(class="uk-card uk-card-body")
         h3(class="uk-card-title") Contract Total
         h4 #{Math.round(priceTotal).toLocaleString(undefined)} ISK
     if status == "Pending"
@@ -30,14 +30,14 @@ block content
             fieldset(class="uk-fieldset")
                 input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
                 input(type="hidden", id="form-type", name="formType", value=contractType)
-                div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+                div(class="uk-card uk-card-body uk-width-1-1")
                     h3(class="uk-card-title") Password
                     div(class="uk-form-controls")
                         input(class="uk-input", id="form-password", name="formPassword", type="password", required="true")
                 div(class="uk-grid uk-child-width-auto")
-                    div(class="uk-card uk-card-default uk-card-body uk-width-1-2")
+                    div(class="uk-card  uk-card-body uk-width-1-2")
                         div(class="uk-form-controls")
-                            input(class="uk-input uk-button-primary", id="form-accept", type="submit", value="Accept Order", formaction="/lookup/accept")
-                    div(class="uk-card uk-card-default uk-card-body uk-width-1-2")
+                            input(class="uk-input uk-button", id="form-accept", type="submit", value="Accept Order", formaction="/lookup/accept")
+                    div(class="uk-card  uk-card-body uk-width-1-2")
                         div(class="uk-form-controls")
-                            input(class="uk-input uk-button-primary", id="form-reject", type="submit", value="Reject Order", formaction="/lookup/reject")
+                            input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="/lookup/reject")
