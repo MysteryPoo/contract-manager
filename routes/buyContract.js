@@ -9,6 +9,15 @@ const db = admin.firestore();
 
 router.post('/', async function(req, res, next) {
 
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
+    if (configRefQuery.empty) {
+        let error = "Fatal error: No server configuration found.";
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const config = configRefQuery.data();
+
     let ticketNumber = 1;
     const ordersRefQuery = await db.collection(collections['Buy-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
     let orderRef = undefined;
