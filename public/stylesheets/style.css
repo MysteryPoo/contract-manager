@@ -10,4 +10,6 @@ a {
 .offset-left {
   position: relative;
   padding-right: 512px;
+  width: auto;
+  height: 100%;
 }
