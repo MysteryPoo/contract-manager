@@ -7,11 +7,85 @@ const admin = require('firebase-admin');
 
 const db = admin.firestore();
 
-router.get('/:ticketNumber', async function(req, res, next) {
-    res.redirect(`/lookup/sell/${req.params.ticketNumber}`);
+router.get('/', async function(req, res, next) {
+
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
+    if (configRefQuery.empty) {
+        let error = "Fatal error: No server configuration found.";
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const config = configRefQuery.data();
+    
+    let typeNoCase = "Sell";
+    const sellOrderRefQuery = await db.collection(collections[`${typeNoCase}-Orders`]).where("Status", "!=", "Preview").get();
+    if (sellOrderRefQuery.empty) {
+        let error = `Cannot find any orders.`;
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const sellOrderRefs = sellOrderRefQuery.docs;
+
+    typeNoCase = "Buy";
+    const buyOrderRefQuery = await db.collection(collections[`${typeNoCase}-Orders`]).where("Status", "!=", "Preview").get();
+    if (buyOrderRefQuery.empty) {
+        let error = `Cannot find any orders.`;
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const buyOrderRefs = buyOrderRefQuery.docs;
+
+    let orderList = {
+        'sell': {
+            'pending': [],
+            'accepted': [],
+            'rejected': []
+        },
+        'buy': {
+            'pending': [],
+            'accepted': [],
+            'rejected': []
+        }
+    };
+    for (let type of [sellOrderRefs, buyOrderRefs]) {
+        for (let order of type) {
+            let typeString = undefined;
+            if (type === sellOrderRefs) {
+                typeString = 'sell';
+            } else if (type === buyOrderRefs) {
+                typeString = 'buy';
+            } else {
+                const error = `Unknown order type (${type}). Bailing out.`;
+                console.log(error);
+                res.send(error);
+                return;
+            }
+            let orderData = order.data();
+            orderList[typeString][orderData['Status'].toLowerCase()].push(orderData);
+        }
+    }
+
+    res.render('lookupList', {
+        title: `${config['Organization']} Contract Lookup`,
+        banner: process.env.banner,
+        logo: process.env.logo,
+        orderList: orderList
+    });
 });
 
 router.get('/:type/:ticketNumber', async function(req, res, next) {
+
+    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
+    if (configRefQuery.empty) {
+        let error = "Fatal error: No server configuration found.";
+        console.log(error);
+        res.send(error);
+        return;
+    }
+    const config = configRefQuery.data();
 
     let typeNoCase = req.params.type.charAt(0).toUpperCase() + req.params.type.slice(1).toLowerCase();
     const ticketNumber = req.params.ticketNumber;
@@ -61,9 +135,12 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
     priceTotal *= priceRef[`${typeNoCase} Weight`];
 
     res.render('lookup', {
-        title: 'Contract Lookup',
+        title: `${config['Organization']} Contract Lookup`,
+        banner: process.env.banner,
+        logo: process.env.logo,
         ticketNumber: Number(ticketNumber),
-        datetime: orderRef['DateTime'],
+        priceDatetime: orderRef['Price-DateTime'],
+        demandDateTime: orderRef['Demand-DateTime'],
         contractType: typeNoCase,
         status: orderRef['Status'],
         materials: materials,

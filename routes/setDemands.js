@@ -54,7 +54,9 @@ router.get('/', async function(req, res, next) {
     }
 
     res.render('setDemands', {
-        title: 'Demands',
+        title: `${config['Organization']} Set Demands`,
+        banner: process.env.banner,
+        logo: process.env.logo,
         demands: demands,
         ores: oreValues,
         minerals: mineralValues,

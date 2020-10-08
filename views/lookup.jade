@@ -1,7 +1,6 @@
 extends layout
 
 block content
-    h1= title
     div(class="uk-grid uk-child-width-auto")
         div(class="uk-card uk-card-default uk-card-body")
             h3(class="uk-card-title") Character Name: #{characterName}
@@ -9,7 +8,10 @@ block content
             h3(class="uk-card-title") Discord Name: #{discordName}
         div(class="uk-card uk-card-default uk-card-body")
             h3(class="uk-card-title") Price Sheet Used
-            p= datetime
+            p= priceDatetime
+        div(class="uk-card uk-card-default uk-card-body")
+            h3(class="uk-card-title") Demand Sheet Used
+            p= demandDateTime
         div(class="uk-card uk-card-default uk-card-body")
             h3(class="uk-card-title") Type: #{contractType}
         div(class="uk-card uk-card-default uk-card-body")

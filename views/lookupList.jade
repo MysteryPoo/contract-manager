@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    ul(class="uk-subnav uk-subnav-pill", uk-switcher)
+        each orderType in ['Buy', 'Sell']
+            li
+                a(href="#") #{orderType} Orders
+    ul(class="uk-switcher uk-margin")
+        each orderType in ['Buy', 'Sell']
+            div(class='uk-margin')
+                ul(class="uk-subnav uk-subnav-pill", uk-switcher)
+                    each state in ['Pending', 'Accepted', 'Rejected']
+                        li
+                            a(href="#") #{state}
+                ul(class="uk-switcher uk-margin")
+                    each state in ['pending', 'accepted', 'rejected']
+                        li
+                            table(class="uk-table")
+                                thead
+                                    tr
+                                        each header in ['Character', 'Ticket Number', 'Value']
+                                            th #{header}
+                                tbody
+                                    each order in orderList[orderType.toLowerCase()][state]
+                                        - let ticketNumber = order['TicketNumber'];
+                                        tr
+                                            each field in ['CharacterName', 'TicketNumber', 'CachedValue']
+                                                td
+                                                    a(href="/lookup/#{orderType.toLowerCase()}/#{ticketNumber}") #{order[field]}

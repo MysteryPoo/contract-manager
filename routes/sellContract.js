@@ -47,11 +47,14 @@ router.post('/', async function(req, res, next) {
         }
     }
     priceTotal *= priceRef['Sell Weight'];
+    order['CachedValue'] = priceTotal;
 
     await db.collection(collections['Sell-Orders']).doc(ticketNumber.toString()).set(order);
 
     res.render('sellContract', {
-        title: 'Sell Contract',
+        title: `${config['Organization']} Sell Contract`,
+        banner: process.env.banner,
+        logo: process.env.logo,
         status: "Preview",
         ticket: ticketNumber,
         total: priceTotal,
@@ -125,7 +128,9 @@ router.post('/confirm', async function(req, res, next) {
     priceTotal *= priceRef['Sell Weight'];
 
     res.render('sellContract', {
-        title: 'Sell Contract',
+        title: `${config['Organization']} Sell Contract`,
+        banner: process.env.banner,
+        logo: process.env.logo,
         contractContact: config['ContractContact'],
         status: "Pending",
         ticket: ticketNumber,

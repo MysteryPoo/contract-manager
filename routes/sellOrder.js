@@ -56,7 +56,9 @@ router.get('/', async function(req, res, next) {
   }
 
   res.render('sellOrder', {
-    title: `${config['Organization']} Material (Sell) Contract`,
+    title: `${config['Organization']} Sell Contract`,
+    banner: process.env.banner,
+    logo: process.env.logo,
     materialList: materialList
   });
     
