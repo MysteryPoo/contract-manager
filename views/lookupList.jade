@@ -26,4 +26,9 @@ block content
                                         tr
                                             each field in ['CharacterName', 'TicketNumber', 'CachedValue']
                                                 td
-                                                    a(href="/lookup/#{orderType.toLowerCase()}/#{ticketNumber}") #{order[field]}
+                                                    if (field == 'CachedValue')
+                                                        h3
+                                                            a(class='uk-link-heading', href="/lookup/#{orderType.toLowerCase()}/#{ticketNumber}") #{order[field].toLocaleString(undefined)} ISK
+                                                    else
+                                                        h3
+                                                            a(class='uk-link-heading', href="/lookup/#{orderType.toLowerCase()}/#{ticketNumber}") #{order[field]}
