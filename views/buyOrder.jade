@@ -20,10 +20,10 @@ block content
           li
             a(href="#") #{material}
       
-      ul(class="uk-switcher uk-margin")
+      ul(class="uk-switcher")
         each list, material in materialList
           li
-            div(class="uk-grid uk-child-width-auto uk-animation-fade")
+            div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
               each val, key in list
                   div(class="uk-card uk-card-secondary uk-card-body")
                     h3.uk-card-title #{key}
