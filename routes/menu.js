@@ -17,7 +17,9 @@ router.get('/', async function(req, res, next) {
     const config = configRefQuery.data();
 
     res.render('menu', {
-        title: `${config['Organization']} Material Exchange`
+        title: `${config['Organization']} Material Exchange`,
+        banner: process.env.banner,
+        logo: process.env.logo
     });
 });
 

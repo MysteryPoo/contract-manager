@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+.offset-left {
+  position: relative;
+  padding-right: 512px;
+}
