@@ -2,12 +2,13 @@ extends layout
 
 block content
     if status === "Pending"
-        div(class="uk-card uk-card-default uk-card-body")
-            h3(class="uk-card-title") Send Contract to: #{contractContact}
-        div(class="uk-card uk-card-primary uk-card-body")
+        div(class="uk-card uk-card-primary uk-card-body uk-margin")
+            h3(class="uk-card-title") Do NOT send contract In-Game
+            p (Expect a PM on Discord to let you know if the materials are available before you submit contract in-game.)
+        div(class="uk-card uk-card-primary uk-card-body uk-margin")
             h3(class="uk-card-title") Ticket Number: #{ticket}
             p (Please put this in your Contract Description)
-    div(class="uk-card uk-card-primary uk-card-body")
+    div(class="uk-card uk-card-primary uk-card-body uk-margin")
         h3.uk-card-title I Will Pay #{Math.round(total).toLocaleString(undefined)} ISK
         p (Put this in the 'I Will Pay' box in the in-game contract)
         h4 Fees to cover: #{Math.round(total*0.04 + total*0.025).toLocaleString(undefined)} ISK
@@ -16,15 +17,15 @@ block content
     div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin")
         each val, key in materialOrder
             if val > 0
-                div(class="uk-card uk-card-secondary uk-card-body")
+                div(class="uk-card uk-card-body")
                     h3(class="uk-card-title") #{key}
                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                     p Units: #{val}
     
     if status == "Preview"
-        div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+        div(class="uk-card uk-card-body uk-width-1-1")
             form(action="/buyContract/confirm", method="post", class="uk-form-horizontal")
                 fieldset(class="uk-fieldset")
                     input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticket)
                     div(class="uk-form-controls")
-                        input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Confirm Order")
+                        input(class="uk-input uk-button", id="form-submit", type="submit", value="Confirm Order")

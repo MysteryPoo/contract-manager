@@ -4,12 +4,12 @@ block content
   form(action="/sellContract", method="post", class="uk-form-horizontal")
     fieldset.uk-fieldset
       div(class="uk-flex uk-flex-center uk-margin")
-        div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+        div(class="uk-card uk-card-body uk-width-1-1")
           h3(class="uk-card-title") Character Name
           div(class="uk-form-controls")
             input(class="uk-input", id="form-character-name", name="form-character-name", type="text", required="true")
       div(class="uk-flex uk-flex-center uk-margin")
-        div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+        div(class="uk-card uk-card-body uk-width-1-1")
           h3(class="uk-card-title") Discord Name
           p (Actual name, e.g. asdf#1234)
           div(class="uk-form-controls")
@@ -34,6 +34,6 @@ block content
                     div(class="uk-form-controls")
                       input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
 
-      div(class="uk-card uk-card-default uk-card-body uk-width-1-1")
+      div(class="uk-card uk-card-body uk-width-1-1")
         div(class="uk-form-controls")
-            input(class="uk-input uk-button-primary", id="form-submit", type="submit", value="Calculate and Preview Order")
+            input(class="uk-input uk-button", id="form-submit", type="submit", value="Calculate and Preview Order")
