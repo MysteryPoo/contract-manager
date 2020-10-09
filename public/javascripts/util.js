@@ -71,7 +71,7 @@ function addDemand() {
     button.setAttribute("onclick", `removeDemand(${children.length});`);
 
     let card = document.createElement("div");
-    card.setAttribute("class", "uk-card uk-card-default uk-card-body");
+    card.setAttribute("class", "uk-card uk-card-body");
     card.setAttribute("id", `demand-${children.length}`);
     card.appendChild(name);
     card.appendChild(valueText);
