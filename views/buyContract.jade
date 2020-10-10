@@ -20,7 +20,7 @@ block content
                 div(class="uk-card uk-card-body")
                     h3(class="uk-card-title") #{key}
                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                    p Units: #{val}
+                    p Units: #{val.toLocaleString(undefined)}
     
     if status == "Preview"
         div(class="uk-card uk-card-body uk-width-1-1")
