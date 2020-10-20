@@ -18,6 +18,16 @@ router.post('/', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
+    if (!config['Buy Orders Enabled']) {
+        res.render('disabled', {
+            title: `${config['Organization']} Buy Contract`,
+            banner: process.env.banner,
+            logo: process.env.logo,
+            feature: "Buy Order"
+        });
+        return;
+    }
+
     let ticketNumber = 1;
     const ordersRefQuery = await db.collection(collections['Buy-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
     let orderRef = undefined;
@@ -82,6 +92,16 @@ router.post('/confirm', async function(req, res, next) {
         return;
     }
     const config = configRefQuery.data();
+
+    if (!config['Buy Orders Enabled']) {
+        res.render('disabled', {
+            title: `${config['Organization']} Buy Contract`,
+            banner: process.env.banner,
+            logo: process.env.logo,
+            feature: "Buy Order"
+        });
+        return;
+    }
 
     const orderRefQuery = await db.collection(collections['Buy-Orders']).where("TicketNumber", "==", Number(ticketNumber)).get();
     if (orderRefQuery.empty) {
