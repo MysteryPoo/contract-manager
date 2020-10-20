@@ -18,6 +18,16 @@ router.get('/', async function(req, res, next) {
   }
   const config = configRefQuery.data();
 
+  if (!config['Buy Orders Enabled']) {
+    res.render('disabled', {
+      title: `${config['Organization']} Buy Contract`,
+      banner: process.env.banner,
+      logo: process.env.logo,
+      feature: "Buy Order"
+    });
+    return;
+  }
+
   const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
   if (priceRefQuery.empty) {
     const error = "Fatal error: No price list found.";

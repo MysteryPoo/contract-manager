@@ -18,6 +18,16 @@ router.post('/', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
+    if (!config['Sell Orders Enabled']) {
+        res.render('disabled', {
+            title: `${config['Organization']} Sell Contract`,
+            banner: process.env.banner,
+            logo: process.env.logo,
+            feature: "Sell Order"
+        });
+        return;
+    }
+
     let ticketNumber = 1;
     const ordersRefQuery = await db.collection(collections['Sell-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
     let orderRef = undefined;
@@ -82,6 +92,16 @@ router.post('/confirm', async function(req, res, next) {
         return;
     }
     const config = configRefQuery.data();
+
+    if (!config['Sell Orders Enabled']) {
+        res.render('disabled', {
+            title: `${config['Organization']} Sell Contract`,
+            banner: process.env.banner,
+            logo: process.env.logo,
+            feature: "Sell Order"
+        });
+        return;
+    }
 
     const orderRefQuery = await db.collection(collections['Sell-Orders']).where("TicketNumber", "==", Number(ticketNumber)).get();
     if (orderRefQuery.empty) {

@@ -2,5 +2,13 @@ extends layout
 
 block content
     div(class="uk-flex uk-flex-center uk-margin")
-        a(href="/sellOrder", class="uk-button uk-button-default", uk-tooltip="title: We Buy Your Stuff") Create Sell Order
-        a(href="/buyOrder", class="uk-button uk-button-default", uk-tooltip="title: We Sell You Stuff") Create Buy Order
+        form(action='/sellOrder')
+            if sellOrdersEnabled
+                button(type="submit", class="uk-button uk-button-default", uk-tooltip="title: We Buy Your Stuff") Create Sell Order
+            else
+                button(type="submit", class="uk-button uk-button-default", uk-tooltip="title: Disabled", disabled) Create Sell Order (Disabled)
+        form(action='/buyOrder')
+            if buyOrdersEnabled
+                button(type="submit", class="uk-button uk-button-default", uk-tooltip="title: We Sell You Stuff") Create Buy Order
+            else
+                button(type="submit", class="uk-button uk-button-default", uk-tooltip="title: Disabled", disabled) Create Buy Order (Disabled)

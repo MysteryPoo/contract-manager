@@ -16,10 +16,15 @@ router.get('/', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
+    const buyOrdersEnabled = config['Buy Orders Enabled'] ? config['Buy Orders Enabled'] : false;
+    const sellOrdersEnabled = config['Sell Orders Enabled'] ? config['Sell Orders Enabled'] : false;
+
     res.render('menu', {
         title: `${config['Organization']} Material Exchange`,
         banner: process.env.banner,
-        logo: process.env.logo
+        logo: process.env.logo,
+        buyOrdersEnabled: buyOrdersEnabled,
+        sellOrdersEnabled: sellOrdersEnabled
     });
 });
 
