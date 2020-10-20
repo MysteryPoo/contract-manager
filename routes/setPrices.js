@@ -78,29 +78,11 @@ router.post('/', async function(req, res, next) {
             'Buy Weight': Number(req.body['form-buy-weight'])
         };
 
-        for (ore of materials.ores) {
-            let oreNoSpace = ore.replace(/ /g, "");
-            priceList[ore] = Number(req.body[`form-${oreNoSpace}`]);
-        }
-    
-        for (mineral of materials.minerals) {
-            let mineralNoSpace = mineral.replace(/ /g, "");
-            priceList[mineral] = Number(req.body[`form-${mineralNoSpace}`]);
-        }
-    
-        for (planetary of materials.planetary) {
-            let planetaryNoSpace = planetary.replace(/ /g, "");
-            priceList[planetary] = Number(req.body[`form-${planetaryNoSpace}`]);
-        }
-    
-        for (salvage of materials.salvage) {
-            let salvageNoSpace = salvage.replace(/ /g, "");
-            priceList[salvage] = Number(req.body[`form-${salvageNoSpace}`]);
-        }
-    
-        for (datacore of materials.datacores) {
-            let datacoreNoSpace = datacore.replace(/ /g, "");
-            priceList[datacore] = Number(req.body[`form-${datacoreNoSpace}`]);
+        for (let category in materials) {
+            for (let material of materials[category]) {
+                let materialNoSpace = material.replace(/ /g, "");
+                priceList[material] = Number(req.body[`form-${materialNoSpace}`]);
+            }
         }
 
         await docRef.set(priceList);
