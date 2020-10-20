@@ -23,54 +23,34 @@ router.get('/', async function(req, res, next) {
         const error = "No price list found.";
         console.log(error);
     }
-
     const priceRef = priceRefQuery.empty ? {} : priceRefQuery.docs[0].data();
 
-    let oreValues = {};
-    let mineralValues = {};
-    let planetaryValues = {};
-    let salvageValues = {};
-    let datacoreValues = {};
+    let materialList = {};
+
     let weights = {
         'sell_weight': Number(priceRef['Sell Weight']),
         'buy_weight': Number(priceRef['Buy Weight'])
     };
 
-    for (ore of materials.ores) {
-        let oreNoSpace = ore.replace(/ /g, "");
-        oreValues[oreNoSpace] = priceRef[ore] || 0;
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            if (materialList[category] == undefined) {
+                materialList[category] = {};
+            }
+            if (materialList[category][materialNoSpace] == undefined) {
+                materialList[category][materialNoSpace] = {};
+            }
+            materialList[category][materialNoSpace] = priceRef[material] || 0;
+        }
     }
 
-    for (mineral of materials.minerals) {
-        let mineralNoSpace = mineral.replace(/ /g, "");
-        mineralValues[mineralNoSpace] = priceRef[mineral] || 0;
-    }
-
-    for (planetary of materials.planetary) {
-        let planetaryNoSpace = planetary.replace(/ /g, "");
-        planetaryValues[planetaryNoSpace] = priceRef[planetary] || 0;
-    }
-
-    for (salvage of materials.salvage) {
-        let salvageNoSpace = salvage.replace(/ /g, "");
-        salvageValues[salvageNoSpace] = priceRef[salvage] || 0;
-    }
-
-    for (datacore of materials.datacores) {
-        let datacoreNoSpace = datacore.replace(/ /g, "");
-        datacoreValues[datacoreNoSpace] = priceRef[datacore] || 0;
-    }
-
-    res.render('admin', {
+    res.render('setPrices', {
         title: `${config['Organization']} Set Prices`,
         banner: process.env.banner,
         logo: process.env.logo,
         weights: weights,
-        ores: oreValues,
-        minerals: mineralValues,
-        planetary: planetaryValues,
-        salvage: salvageValues,
-        datacores: datacoreValues
+        materialList: materialList
     });
 });
 
