@@ -23,7 +23,6 @@ router.get('/', async function(req, res, next) {
         const error = "No demand list found.";
         console.log(error);
     }
-
     const demandRef = demandRefQuery.empty ? {
         'Demands': {
             'Medium': 1.0
@@ -31,36 +30,20 @@ router.get('/', async function(req, res, next) {
     } : demandRefQuery.docs[0].data();
 
     let demands = demandRef['Demands'];
-    let oreValues = {};
-    let mineralValues = {};
-    let planetaryValues = {};
-    let salvageValues = {};
-    let datacoreValues = {};
 
-    for (ore of materials.ores) {
-        let oreNoSpace = ore.replace(/ /g, "");
-        oreValues[oreNoSpace] = demandRef[ore] || 'Medium';
-        console.log(oreValues[oreNoSpace]);
-    }
+    let materialList = {};
 
-    for (mineral of materials.minerals) {
-        let mineralNoSpace = mineral.replace(/ /g, "");
-        mineralValues[mineralNoSpace] = demandRef[mineral] || 'Medium';
-    }
-
-    for (planetary of materials.planetary) {
-        let planetaryNoSpace = planetary.replace(/ /g, "");
-        planetaryValues[planetaryNoSpace] = demandRef[planetary] || 'Medium';
-    }
-
-    for (salvage of materials.salvage) {
-        let salvageNoSpace = salvage.replace(/ /g, "");
-        salvageValues[salvageNoSpace] = demandRef[salvage] || 'Medium';
-    }
-
-    for (datacore of materials.datacores) {
-        let datacoreNoSpace = datacore.replace(/ /g, "");
-        datacoreValues[datacoreNoSpace] = demandRef[datacore] || 'Medium';
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            if (materialList[category] == undefined) {
+                materialList[category] = {};
+            }
+            if (materialList[category][materialNoSpace] == undefined) {
+                materialList[category][materialNoSpace] = {};
+            }
+            materialList[category][materialNoSpace] = demandRef[material] || 'Medium';
+        }
     }
 
     res.render('setDemands', {
@@ -68,11 +51,7 @@ router.get('/', async function(req, res, next) {
         banner: process.env.banner,
         logo: process.env.logo,
         demands: demands,
-        ores: oreValues,
-        minerals: mineralValues,
-        planetary: planetaryValues,
-        salvage: salvageValues,
-        datacores: datacoreValues
+        materialList: materialList
     });
 });
 
@@ -109,32 +88,12 @@ router.post('/', async function(req, res, next) {
             'Demands': demands
         };
 
-        for (ore of materials.ores) {
-            let oreNoSpace = ore.replace(/ /g, "");
-            demandDoc[ore] = req.body[`form-${oreNoSpace}`];
+        for (let category in materials) {
+            for (let material of materials[category]) {
+                let materialNoSpace = material.replace(/ /g, "");
+                demandDoc[material] = req.body[`form-${materialNoSpace}`];
+            }
         }
-    
-        for (mineral of materials.minerals) {
-            let mineralNoSpace = mineral.replace(/ /g, "");
-            demandDoc[mineral] = req.body[`form-${mineralNoSpace}`];
-        }
-    
-        for (planetary of materials.planetary) {
-            let planetaryNoSpace = planetary.replace(/ /g, "");
-            demandDoc[planetary] = req.body[`form-${planetaryNoSpace}`];
-        }
-    
-        for (salvage of materials.salvage) {
-            let salvageNoSpace = salvage.replace(/ /g, "");
-            demandDoc[salvage] = req.body[`form-${salvageNoSpace}`];
-        }
-    
-        for (datacore of materials.datacores) {
-            let datacoreNoSpace = datacore.replace(/ /g, "");
-            demandDoc[datacore] = req.body[`form-${datacoreNoSpace}`];
-        }
-
-        console.log(demandDoc);
 
         await docRef.set(demandDoc);
     } else {
