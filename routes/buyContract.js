@@ -66,7 +66,8 @@ router.post('/', async function(req, res, next) {
                 demand = demandRef[material]['Buy'];
             }
             // End of backwards compatibility
-            priceTotal += Number(req.body[`form-${materialNoSpace}`]) * priceRef[material] * demandRef['Demands'][demand];
+            let basePrice = priceRef[material] || 0;
+            priceTotal += Number(req.body[`form-${materialNoSpace}`]) * basePrice * demandRef['Demands'][demand];
             order[material] = Number(req.body[`form-${materialNoSpace}`]);
             if (order[material] > 0) {
                 materialList[materialNoSpace] = order[material];
@@ -159,7 +160,7 @@ router.post('/confirm', async function(req, res, next) {
             let materialNoSpace = material.replace(/ /g, "");
             if (orderRef[material] !== 0) {
                 materialOrder[materialNoSpace] = orderRef[material];
-                let demand = 'Medium';
+                let demand = Object.keys(demandRef['Demands'])[0];
                 // Backwards compatibility
                 if (typeof demandRef[material] === "string") {
                     demand = demandRef[material];
@@ -167,7 +168,8 @@ router.post('/confirm', async function(req, res, next) {
                     demand = demandRef[material]['Buy'];
                 }
                 // End of backwards compatibility
-                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demand];
+                let basePrice = priceRef[material] || 0;
+                priceTotal += orderRef[material] * basePrice * demandRef['Demands'][demand];
             }
         }
     }

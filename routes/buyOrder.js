@@ -60,7 +60,7 @@ router.get('/', async function(req, res, next) {
       if (materialList[category][materialNoSpace] == undefined) {
         materialList[category][materialNoSpace] = {};
       }
-      let demand = 'Medium';
+      let demand = Object.keys(demandRef['Demands'])[0];
       // Backwards compatibility
       if (typeof demandRef[material] === "string") {
           demand = demandRef[material];
@@ -68,7 +68,8 @@ router.get('/', async function(req, res, next) {
           demand = demandRef[material]['Buy'];
       }
       // End of backwards compatibility
-      materialList[category][materialNoSpace]['price'] = priceRef[material] * buyWeight * demandRef['Demands'][demand];
+      let basePrice = priceRef[material] || 0;
+      materialList[category][materialNoSpace]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
       materialList[category][materialNoSpace]['demand'] = demand;
     }
   }

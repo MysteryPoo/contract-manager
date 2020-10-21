@@ -54,8 +54,8 @@ router.get('/', async function(req, res, next) {
             } else {
                 console.log(`Demand for ${material} does not exist, defaulting...`);
                 materialList[category][materialNoSpace] = {
-                    'Buy': 'Medium',
-                    'Sell': 'Medium'
+                    'Buy': Object.keys(demands)[0],
+                    'Sell': Object.keys(demands)[0]
                 };
             }
             

@@ -93,10 +93,55 @@ const datacores = [
     'Minmatar Starship Engineering'
 ];
 
+const wrecks = [
+    'Lv4 Amarr Ship Debris',
+    'Lv5 Amarr Ship Debris',
+    'Lv6 Amarr Ship Debris',
+    'Lv7 Amarr Ship Debris',
+    'Lv8 Amarr Ship Debris',
+    'Lv9 Amarr Ship Debris',
+    'Lv10 Amarr Ship Debris',
+    'Lv4 Caldari Ship Debris',
+    'Lv5 Caldari Ship Debris',
+    'Lv6 Caldari Ship Debris',
+    'Lv7 Caldari Ship Debris',
+    'Lv8 Caldari Ship Debris',
+    'Lv9 Caldari Ship Debris',
+    'Lv10 Caldari Ship Debris',
+    'Lv4 Gallente Ship Debris',
+    'Lv5 Gallente Ship Debris',
+    'Lv6 Gallente Ship Debris',
+    'Lv7 Gallente Ship Debris',
+    'Lv8 Gallente Ship Debris',
+    'Lv9 Gallente Ship Debris',
+    'Lv10 Gallente Ship Debris',
+    'Lv4 Minmatar Ship Debris',
+    'Lv5 Minmatar Ship Debris',
+    'Lv6 Minmatar Ship Debris',
+    'Lv7 Minmatar Ship Debris',
+    'Lv8 Minmatar Ship Debris',
+    'Lv9 Minmatar Ship Debris',
+    'Lv10 Minmatar Ship Debris',
+    'Small Damaged ORE Hull',
+    'Medium Damaged ORE Hull',
+    'Large Damaged ORE Hull',
+    'Guristas Ship Debris',
+    'Sansha Ship Debris',
+    'Blood Raider Ship Debris',
+    'Angel Ship Debris',
+    'Serpentis Ship Debris',
+    'SOE Ship Debris',
+    'Mordus Legion Ship Debris',
+    'Small Damaged InterBus Hull',
+    'Medium Damaged InterBus Hull',
+    'Large Damaged InterBus Hull'
+];
+
 module.exports = {
     ores: ores,
     minerals: minerals,
     planetary: planetary,
     salvage: salvage,
-    datacores: datacores
+    datacores: datacores,
+    wrecks: wrecks
 };

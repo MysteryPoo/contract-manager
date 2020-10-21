@@ -127,7 +127,7 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
             let materialNoSpace = material.replace(/ /g, "");
             if (orderRef[material] !== 0) {
                 materialOrder[materialNoSpace] = orderRef[material];
-                let demand = 'Medium';
+                let demand = Object.keys(demandRef['Demands'])[0];
                 // Backwards compatibility
                 if (typeof demandRef[material] === "string") {
                     demand = demandRef[material];
@@ -135,8 +135,9 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
                     demand = demandRef[material][typeNoCase];
                 }
                 // End of backwards compatibility
-                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demand];
-                priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`] * demandRef['Demands'][demand];
+                let basePrice = priceRef[material] || 0;
+                priceTotal += orderRef[material] * basePrice * demandRef['Demands'][demand];
+                priceRefNoSpace[materialNoSpace] = basePrice * priceRef[`${typeNoCase} Weight`] * demandRef['Demands'][demand];
             }
         }
     }
