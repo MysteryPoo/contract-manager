@@ -127,8 +127,16 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
             let materialNoSpace = material.replace(/ /g, "");
             if (orderRef[material] !== 0) {
                 materialOrder[materialNoSpace] = orderRef[material];
-                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demandRef[material]];
-                priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`] * demandRef['Demands'][demandRef[material]];
+                let demand = 'Medium';
+                // Backwards compatibility
+                if (typeof demandRef[material] === "string") {
+                    demand = demandRef[material];
+                } else if (demandRef[material] !== undefined) {
+                    demand = demandRef[material][typeNoCase];
+                }
+                // End of backwards compatibility
+                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demand];
+                priceRefNoSpace[materialNoSpace] = priceRef[material] * priceRef[`${typeNoCase} Weight`] * demandRef['Demands'][demand];
             }
         }
     }

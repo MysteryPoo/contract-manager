@@ -60,8 +60,16 @@ router.get('/', async function(req, res, next) {
       if (materialList[category][materialNoSpace] == undefined) {
         materialList[category][materialNoSpace] = {};
       }
-      materialList[category][materialNoSpace]['price'] = priceRef[material] * sellWeight * demandRef['Demands'][demandRef[material]];
-      materialList[category][materialNoSpace]['demand'] = demandRef[material];
+      let demand = 'Medium';
+      // Backwards compatibility
+      if (typeof demandRef[material] === "string") {
+          demand = demandRef[material];
+      } else if (demandRef[material] !== undefined) {
+          demand = demandRef[material]['Sell'];
+      }
+      // End of backwards compatibility
+      materialList[category][materialNoSpace]['price'] = priceRef[material] * sellWeight * demandRef['Demands'][demand];
+      materialList[category][materialNoSpace]['demand'] = demand;
     }
   }
 
@@ -114,17 +122,35 @@ router.get('/csv', async function(req, res, next) {
   returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}, ${demandRef['DateTime']}`;
   returnValue += "\n";
 
+  // BUY Demand
   for (let category in materials) {
     for (let material of materials[category]) {
-      returnValue += demandRef[material] + ',';
+      let demand = 'Medium';
+      // Backwards compatibility
+      if (typeof demandRef[material] === "string") {
+          demand = demandRef[material];
+      } else if (demandRef[material] !== undefined) {
+          demand = demandRef[material]['Buy'];
+      }
+      // End of backwards compatibility
+      returnValue += demandRef['Demands'][demand] + ',';
     }
   }
   returnValue += 'N/A, N/A, N/A, N/A';
   returnValue += "\n";
 
+  // SELL Demand
   for (let category in materials) {
     for (let material of materials[category]) {
-      returnValue += demandRef['Demands'][demandRef[material]] + ',';
+      let demand = 'Medium';
+      // Backwards compatibility
+      if (typeof demandRef[material] === "string") {
+          demand = demandRef[material];
+      } else if (demandRef[material] !== undefined) {
+          demand = demandRef[material]['Sell'];
+      }
+      // End of backwards compatibility
+      returnValue += demandRef['Demands'][demand] + ',';
     }
   }
   returnValue += 'N/A, N/A, N/A, N/A';

@@ -39,10 +39,26 @@ router.get('/', async function(req, res, next) {
             if (materialList[category] == undefined) {
                 materialList[category] = {};
             }
-            if (materialList[category][materialNoSpace] == undefined) {
-                materialList[category][materialNoSpace] = {};
+            if (demandRef[material]) {
+                console.log(`Demand for ${material} exists...`);
+                if (typeof demandRef[material] === "string") {
+                    console.log(`Demand was legacy, updating...`);
+                    materialList[category][materialNoSpace] = {
+                        'Buy': demandRef[material],
+                        'Sell': demandRef[material]
+                    };
+                } else {
+                    console.log(`Demand is valid: ${demandRef[material]}`);
+                    materialList[category][materialNoSpace] = demandRef[material];
+                }
+            } else {
+                console.log(`Demand for ${material} does not exist, defaulting...`);
+                materialList[category][materialNoSpace] = {
+                    'Buy': 'Medium',
+                    'Sell': 'Medium'
+                };
             }
-            materialList[category][materialNoSpace] = demandRef[material] || 'Medium';
+            
         }
     }
 
@@ -91,7 +107,10 @@ router.post('/', async function(req, res, next) {
         for (let category in materials) {
             for (let material of materials[category]) {
                 let materialNoSpace = material.replace(/ /g, "");
-                demandDoc[material] = req.body[`form-${materialNoSpace}`];
+                demandDoc[material] = {
+                    'Buy': req.body[`form-buy-${materialNoSpace}`],
+                    'Sell': req.body[`form-sell-${materialNoSpace}`]
+                }
             }
         }
 
