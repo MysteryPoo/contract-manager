@@ -146,6 +146,7 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
         title: `${config['Organization']} Contract Lookup`,
         banner: process.env.banner,
         logo: process.env.logo,
+        donate: config['Donation Enabled'],
         ticketNumber: Number(ticketNumber),
         priceDatetime: orderRef['Price-DateTime'],
         demandDateTime: orderRef['Demand-DateTime'],

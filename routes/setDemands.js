@@ -66,6 +66,7 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Set Demands`,
         banner: process.env.banner,
         logo: process.env.logo,
+        donate: config['Donation Enabled'],
         demands: demands,
         materialList: materialList
     });
