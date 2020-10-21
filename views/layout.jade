@@ -8,8 +8,9 @@ html(class="uk-background-secondary")
     script(src='https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js')
     script(src="/javascripts/util.js")
   body(class="uk-light")
-    div(class="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light", data-src="/media/#{banner}" uk-img)
-        img(class="offset-left", alt="", uk-img="data-src:/media/#{logo}", uk-svg)
+    a(href="/")
+      div(class="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light", data-src="/media/#{banner}" uk-img)
+          img(class="offset-left", alt="", uk-img="data-src:/media/#{logo}", uk-svg)
     div(class="uk-margin uk-flex uk-flex-center", style={'padding-top': '100px'})
         h1(class="uk-h1") #{title}
     block content
