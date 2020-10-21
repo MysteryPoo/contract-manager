@@ -38,9 +38,6 @@ router.get('/', async function(req, res, next) {
             if (materialList[category] == undefined) {
                 materialList[category] = {};
             }
-            if (materialList[category][materialNoSpace] == undefined) {
-                materialList[category][materialNoSpace] = {};
-            }
             materialList[category][materialNoSpace] = priceRef[material] || 0;
         }
     }

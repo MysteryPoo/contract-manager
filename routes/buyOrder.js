@@ -60,8 +60,16 @@ router.get('/', async function(req, res, next) {
       if (materialList[category][materialNoSpace] == undefined) {
         materialList[category][materialNoSpace] = {};
       }
-      materialList[category][materialNoSpace]['price'] = priceRef[material] * buyWeight * demandRef['Demands'][demandRef[material]];
-      materialList[category][materialNoSpace]['demand'] = demandRef[material];
+      let demand = 'Medium';
+      // Backwards compatibility
+      if (typeof demandRef[material] === "string") {
+          demand = demandRef[material];
+      } else if (demandRef[material] !== undefined) {
+          demand = demandRef[material]['Buy'];
+      }
+      // End of backwards compatibility
+      materialList[category][materialNoSpace]['price'] = priceRef[material] * buyWeight * demandRef['Demands'][demand];
+      materialList[category][materialNoSpace]['demand'] = demand;
     }
   }
 

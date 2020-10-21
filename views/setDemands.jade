@@ -42,12 +42,23 @@ block content
                                 div(class="uk-card uk-card-body")
                                     h3(class="uk-card-title") #{key}
                                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                                    p Current Demand: #{val} (#{demands[val]})
-                                    label(class="uk-form-label", for="form-#{key}") New Demand
+                                    -let sellDemand = val['Sell'];
+                                    p Sell Demand: #{sellDemand} (#{demands[sellDemand]})
+                                    -let buyDemand = val['Buy'];
+                                    p Buy Demand: #{buyDemand} (#{demands[buyDemand]})
+                                    label(class="uk-form-label", for="form-sell-#{key}") Sell Demand
                                     div(class="uk-form-controls")
-                                        select(class="uk-select", id="form-#{key}", name="form-#{key}")
+                                        select(class="uk-select", id="form-sell-#{key}", name="form-sell-#{key}")
                                             each demandValue, demandName in demands
-                                                if demandName == val
+                                                if demandName == val['Sell']
+                                                    option(selected) #{demandName}
+                                                else
+                                                    option #{demandName}
+                                    label(class="uk-form-label", for="form-buy-#{key}") Buy Demand
+                                    div(class="uk-form-controls")
+                                        select(class="uk-select", id="form-buy-#{key}", name="form-buy-#{key}")
+                                            each demandValue, demandName in demands
+                                                if demandName == val['Buy']
                                                     option(selected) #{demandName}
                                                 else
                                                     option #{demandName}

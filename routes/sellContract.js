@@ -58,7 +58,15 @@ router.post('/', async function(req, res, next) {
     for (let category in materials) {
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
-            priceTotal += Number(req.body[`form-${materialNoSpace}`]) * priceRef[material] * demandRef['Demands'][demandRef[material]];
+            let demand = 'Medium';
+            // Backwards compatibility
+            if (typeof demandRef[material] === "string") {
+                demand = demandRef[material];
+            } else if (demandRef[material] !== undefined) {
+                demand = demandRef[material]['Sell'];
+            }
+            // End of backwards compatibility
+            priceTotal += Number(req.body[`form-${materialNoSpace}`]) * priceRef[material] * demandRef['Demands'][demand];
             order[material] = Number(req.body[`form-${materialNoSpace}`]);
             if (order[material] > 0) {
                 materialList[materialNoSpace] = order[material];
@@ -150,7 +158,15 @@ router.post('/confirm', async function(req, res, next) {
             let materialNoSpace = material.replace(/ /g, "");
             if (orderRef[material] !== 0) {
                 materialOrder[materialNoSpace] = orderRef[material];
-                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demandRef[material]];
+                let demand = 'Medium';
+                // Backwards compatibility
+                if (typeof demandRef[material] === "string") {
+                    demand = demandRef[material];
+                } else if (demandRef[material] !== undefined) {
+                    demand = demandRef[material]['Sell'];
+                }
+                // End of backwards compatibility
+                priceTotal += orderRef[material] * priceRef[material] * demandRef['Demands'][demand];
             }
         }
     }
