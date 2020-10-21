@@ -1,4 +1,28 @@
 
+// Opera 8.0+
+var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+// Firefox 1.0+
+var isFirefox = typeof InstallTrigger !== 'undefined';
+
+// Safari 3.0+ "[object HTMLElementConstructor]" 
+var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+// Internet Explorer 6-11
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+// Edge 20+
+var isEdge = !isIE && !!window.StyleMedia;
+
+// Chrome 1 - 79
+var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+
+// Edge (based on chromium) detection
+var isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
+
+// Blink engine detection
+var isBlink = (isChrome || isOpera) && !!window.CSS;
+
 function updateSellWeight(value, realValue) {
     if (realValue) {
         document.getElementById('new-sell-weight').value=value;
@@ -106,4 +130,43 @@ function removeDemand(index) {
     }
 
     document.getElementById('demand-count').value = demandList.children.length - 1;
+};
+
+document.onpaste = function(e) {
+  var pastedText = isIE ? window.clipboardData.getData('Text') : e.clipboardData.getData('text/plain');
+
+  let table = [];
+  let tableFirstPass = pastedText.split("\n");
+
+  for (let row of tableFirstPass) {
+      let rowSplit = row.split("\t");
+      let newRow = [];
+      for (let element of rowSplit) {
+          let newElement = element.replace(/\-/g, " ").replace(/ /g, "");
+          newRow.push(newElement);
+      }
+      table.push(newRow);
+  }
+
+  for (let row of table) {
+      for (let i = 0; i < 12; i += 1) {
+        let name = row[i];
+        let required = Math.ceil(Number(row[i + 1].replace(/,/g,"")));
+        let cost = Math.ceil(Number(row[i + 2].replace(/,/g,"")));
+
+        
+        if (name !== "" && Number(name).toString() === "NaN" && required.toString() !== "NaN" && cost.toString() !== "NaN") {
+            let dataPoint = {
+                name: name,
+                required: required
+            };
+            let field = document.getElementById(`form-${dataPoint.name}`);
+            if (field) {
+                field.value = dataPoint.required.toString();
+            }
+        }
+      }
+  }
+  
+  return false; // Prevent the default handler from running.
 };
