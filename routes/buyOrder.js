@@ -52,6 +52,11 @@ router.get('/', async function(req, res, next) {
   let buyWeight = Number(priceRef['Buy Weight']);
 
   for (let category in materials) {
+    if (config['Categories']) {
+      if (!config['Categories'][category]) {
+        continue;
+      }
+    }
     for (let material of materials[category]) {
       let materialNoSpace = material.replace(/ /g, "");
       if (materialList[category] == undefined) {
