@@ -56,6 +56,11 @@ router.post('/', async function(req, res, next) {
     let priceTotal = 0;
 
     for (let category in materials) {
+        if (config['Categories']) {
+            if (!config['Categories'][category]) {
+                continue;
+            }
+        }
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
             let demand = 'Medium';
@@ -156,6 +161,11 @@ router.post('/confirm', async function(req, res, next) {
     let materialOrder = {};
 
     for (let category in materials) {
+        if (config['Categories']) {
+            if (!config['Categories'][category]) {
+                continue;
+            }
+        }
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
             if (orderRef[material] !== 0) {
