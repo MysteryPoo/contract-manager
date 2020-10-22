@@ -125,7 +125,7 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
     for (let category in materials) {
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
-            if (orderRef[material] !== 0) {
+            if (orderRef[material] && orderRef[material] !== 0) {
                 materialOrder[materialNoSpace] = orderRef[material];
                 let demand = Object.keys(demandRef['Demands'])[0];
                 // Backwards compatibility
