@@ -103,60 +103,38 @@ router.get('/csv', async function(req, res, next) {
   }
   const demandRef = demandRefQuery.docs[0].data();
 
-  let returnValue = "";
-
   let sellWeight = Number(priceRef['Sell Weight']);
   let buyWeight = Number(priceRef['Buy Weight']);
 
-  for (let category in materials) {
-    for (let material of materials[category]) {
-      returnValue += material + ',';
-    }
-  }
-  returnValue += "Sell Weight, Buy Weight, Price-DateTime, Demand-DateTime";
+  let returnValue = "";
+
+  // Global data
+  returnValue += "Sell Weight, Buy Weight, Price-DateTime, Demand-DateTime,";
+  returnValue += "\n";
+  returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}, ${demandRef['DateTime']},`;
+  returnValue += "\n";
+
+  // Material Data
+  returnValue += "Material Name, Material Base Price, Buy Demand Multiplier, Sell Demand Multiplier,";
   returnValue += "\n";
 
   for (let category in materials) {
     for (let material of materials[category]) {
       let basePrice = priceRef[material] || 0;
-      returnValue += basePrice + ',';
-    }
-  }
-  returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}, ${demandRef['DateTime']}`;
-  returnValue += "\n";
-
-  // BUY Demand
-  for (let category in materials) {
-    for (let material of materials[category]) {
-      let demand = 'Medium';
+      let buyDemand = Object.keys(demandRef['Demands'])[0];
+      let sellDemand = Object.keys(demandRef['Demands'])[0];
       // Backwards compatibility
       if (typeof demandRef[material] === "string") {
-          demand = demandRef[material];
+          buyDemand = sellDemand = demandRef[material];
       } else if (demandRef[material] !== undefined) {
-          demand = demandRef[material]['Buy'];
+          buyDemand = demandRef[material]['Buy'];
+          sellDemand = demandRef[material]['Sell'];
       }
       // End of backwards compatibility
-      returnValue += demandRef['Demands'][demand] + ',';
+      returnValue += `${material}, ${basePrice}, ${demandRef['Demands'][buyDemand]}, ${demandRef['Demands'][sellDemand]},`;
+      returnValue += "\n";
     }
   }
-  returnValue += 'N/A, N/A, N/A, N/A';
-  returnValue += "\n";
-
-  // SELL Demand
-  for (let category in materials) {
-    for (let material of materials[category]) {
-      let demand = 'Medium';
-      // Backwards compatibility
-      if (typeof demandRef[material] === "string") {
-          demand = demandRef[material];
-      } else if (demandRef[material] !== undefined) {
-          demand = demandRef[material]['Sell'];
-      }
-      // End of backwards compatibility
-      returnValue += demandRef['Demands'][demand] + ',';
-    }
-  }
-  returnValue += 'N/A, N/A, N/A, N/A';
 
   res.set('Content-Type', 'text/plain');
   res.send(returnValue);
