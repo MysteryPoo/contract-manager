@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    if messages.error
+        messages.error
+    form(action="/login", method="POST")
+        div(class="uk-margin")
+            label(class="uk-form-label", for="email") Email
+            input(class="uk-input", type="email", id="email", name="email", required)
+        div(class="uk-margin")
+            label(class="uk-form-label", for="password") Password
+            input(class="uk-input", type="password", id="password", name="password", required)
+        button(class="uk-button uk-button-default", type="submit") Login
+    
+    a(class="uk-link-text", href="/register") Register
