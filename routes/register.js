@@ -23,23 +23,28 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Registration`,
         banner: process.env.banner,
         logo: process.env.logo,
-        messages: req.flash('error')
+        success: req.flash('success'),
+        error: req.flash('error'),
+        donate: config['Donation Enabled']
     });
 });
 
 router.post('/', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        console.log(hashedPassword);
         cache.users.push({
-            id: Date.now().toString(),
-            charactername: req.body.charactername,
-            discordname: req.body.discordname,
+            id: req.body.charactername,
+            CharacterName: req.body.charactername,
+            DiscordName: req.body.discordname,
             email: req.body.email,
             password: hashedPassword,
             isAdmin: false
         });
         req.flash('success', 'User created successfully');
         res.redirect('/login');
+
+        console.log(cache.users);
     } catch (e) {
         console.log(e);
         req.flash('error', 'Unable to create user');
