@@ -71,6 +71,9 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Set Demands`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
+        success: req.flash('success'),
+        error: req.flash('error'),
         donate: config['Donation Enabled'],
         demands: demands,
         materialList: materialList
@@ -84,10 +87,6 @@ router.post('/', async function(req, res, next) {
         return;
     }
 
-    let message = "OK";
-
-    console.log(req.body);
-
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
@@ -98,7 +97,6 @@ router.post('/', async function(req, res, next) {
     const config = configRefQuery.data();
 
     if (req.body['form-password'] === config['Password']) {
-        console.log("Password OK");
 
         const dateEntered = new Date().toISOString();
         const docRef = db.collection(collections['Demand-List']).doc(dateEntered);
@@ -127,10 +125,12 @@ router.post('/', async function(req, res, next) {
         }
 
         await docRef.set(demandDoc);
+        
+        req.flash('success', "Updated demands");
     } else {
-        message = "BAD PASSWORD";
+        req.flash('error', "BAD PASSWORD");
     }
-    res.send(message);
+    res.redirect(req.baseUrl);
 });
 
 module.exports = router;
