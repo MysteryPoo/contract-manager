@@ -8,11 +8,41 @@ html(class="uk-background-secondary")
     script(src='https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js')
     script(src="/javascripts/util.js")
   body(class="uk-light")
+    // Banner
     a(href="/")
       div(class="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light", data-src="/media/#{banner}" uk-img)
           img(class="offset-left", alt="", uk-img="data-src:/media/#{logo}", uk-svg)
+
+    // Navigation
+    nav(class="uk-navbar-container uk-navbar-transparent", uk-navbar)
+      div(class="uk-navbar-center")
+        ul(class="uk-navbar-nav")
+          li
+            a(class="uk-link", href="/") Home
+          li
+            a(class="uk-link", href="/buyOrder") Buy Order
+          li
+            a(class="uk-link", href="/sellOrder") Sell Order
+          if user
+            if user.isAdmin
+              li
+                a(class="uk-link", href="/lookup") Lookup
+              li
+                a(class="uk-link", href="/setPrices") Set Prices
+              li
+                a(class="uk-link", href="/setDemands") Set Demands
+            li
+              a(class="uk-link", href="/logout") Logout
+          else
+            li
+              a(class="uk-link", href="/login") Login
+            li
+              a(class="uk-link", href="/register") Register
+
+    // Title
     div(class="uk-margin uk-flex uk-flex-center", style={'padding-top': '100px'})
         h1(class="uk-h1") #{title}
+
     block content
 
     include footer

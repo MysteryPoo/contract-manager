@@ -23,6 +23,7 @@ router.post('/', async function(req, res, next) {
             title: `${config['Organization']} Sell Contract`,
             banner: process.env.banner,
             logo: process.env.logo,
+            user: req.user,
             feature: "Sell Order"
         });
         return;
@@ -88,6 +89,7 @@ router.post('/', async function(req, res, next) {
         title: `${config['Organization']} Sell Contract`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
         donate: config['Donation Enabled'],
         status: "Preview",
         ticket: ticketNumber,
@@ -189,6 +191,7 @@ router.post('/confirm', async function(req, res, next) {
         title: `${config['Organization']} Sell Contract`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
         donate: config['Donation Enabled'],
         contractContact: config['ContractContact'],
         status: "Pending",

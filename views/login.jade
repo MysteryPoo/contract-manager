@@ -1,8 +1,16 @@
 extends layout
 
 block content
-    if messages.error
-        messages.error
+    if success.length > 0
+        for message in success
+            div(class="uk-alert-success", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    if error.length > 0
+        for message in error
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
     form(action="/login", method="POST")
         div(class="uk-margin")
             label(class="uk-form-label", for="email") Email

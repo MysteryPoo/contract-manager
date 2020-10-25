@@ -23,6 +23,7 @@ router.get('/', async function(req, res, next) {
       title: `${config['Organization']} Sell Contract`,
       banner: process.env.banner,
       logo: process.env.logo,
+      user: req.user,
       feature: "Sell Order"
     });
     return;
@@ -83,6 +84,7 @@ router.get('/', async function(req, res, next) {
     title: `${config['Organization']} Sell Contract`,
     banner: process.env.banner,
     logo: process.env.logo,
+    user: req.user,
     donate: config['Donation Enabled'],
     materialList: materialList
   });

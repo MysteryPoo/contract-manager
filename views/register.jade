@@ -1,13 +1,18 @@
 extends layout
 
 block content
+    if messages.length > 0
+        for message in messages
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
     form(action="/register", method="POST")
         div(class="uk-margin")
             label(for="charactername") Character Name
             input(class="uk-input", type="text", id="charactername", name="charactername", required)
         div(class="uk-margin")
-            label(for="email") Discord Name
-            input(class="uk-input", type="email", id="email", name="email", required)
+            label(for="discordname") Discord Name
+            input(class="uk-input", type="text", id="discordname", name="discordname", required)
         div(class="uk-margin")
             label(for="email") Email
             input(class="uk-input", type="email", id="email", name="email", required)
