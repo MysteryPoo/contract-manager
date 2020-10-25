@@ -24,6 +24,8 @@ html(class="uk-background-secondary")
           li
             a(class="uk-link", href="/sellOrder") Sell Order
           if user
+            li
+              a(class="uk-link", href="/lookup/myOrders") My Orders
             if user.isAdmin
               li
                 a(class="uk-link", href="/lookup") Lookup
