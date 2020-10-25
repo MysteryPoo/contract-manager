@@ -23,7 +23,8 @@ router.get('/', async function(req, res, next) {
         banner: process.env.banner,
         logo: process.env.logo,
         success: req.flash('success'),
-        error: req.flash('error')
+        error: req.flash('error'),
+        donate: config['Donation Enabled']
     });
 });
 
