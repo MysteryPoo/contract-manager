@@ -9,6 +9,11 @@ const db = admin.firestore();
 
 router.get('/', async function(req, res, next) {
 
+    if (!req.user || !req.user.isAdmin) {
+        res.redirect('/');
+        return;
+    }
+
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
@@ -53,6 +58,12 @@ router.get('/', async function(req, res, next) {
 });
 
 router.post('/', async function(req, res, next) {
+
+    if (!req.user || !req.user.isAdmin) {
+        res.redirect('/');
+        return;
+    }
+
     let message = "OK";
 
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();

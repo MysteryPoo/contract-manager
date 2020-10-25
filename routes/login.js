@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const passport = require('passport');
 
 const admin = require('firebase-admin');
 const db = admin.firestore();
@@ -21,7 +22,15 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Login`,
         banner: process.env.banner,
         logo: process.env.logo,
+        success: req.flash('success'),
+        error: req.flash('error')
     });
 });
+
+router.post('/', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}));
 
 module.exports = router;

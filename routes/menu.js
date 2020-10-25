@@ -23,6 +23,7 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Material Exchange`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
         donate: config['Donation Enabled'],
         buyOrdersEnabled: buyOrdersEnabled,
         sellOrdersEnabled: sellOrdersEnabled
