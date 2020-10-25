@@ -36,6 +36,7 @@ router.post('/', async function(req, res, next) {
         orderRef = ordersRefQuery.docs[0].data();
         ticketNumber = Number(orderRef['TicketNumber']) + 1;
     }
+    // TODO : This only valid if user matches order owner
     if (req.body.ticketNumber) {
         ticketNumber = req.body.ticketNumber;
     }
