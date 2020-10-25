@@ -1,6 +1,16 @@
 extends layout
 
 block content
+    if success.length > 0
+        for message in success
+            div(class="uk-alert-success", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    if error.length > 0
+        for message in error
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
     div(class="uk-grid uk-child-width-auto")
         div(class="uk-card uk-card-body")
             h3(class="uk-card-title") Character Name: #{characterName}
@@ -25,7 +35,7 @@ block content
     div(class="uk-card uk-card-body")
         h3(class="uk-card-title") Contract Total
         h4 #{Math.round(priceTotal).toLocaleString(undefined)} ISK
-    if status == "Pending"
+    if user && user.isAdmin && status == "Pending"
         form(method="post", class="uk-form-horizontal")
             fieldset(class="uk-fieldset")
                 input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
@@ -37,7 +47,7 @@ block content
                 div(class="uk-grid uk-child-width-auto")
                     div(class="uk-card  uk-card-body uk-width-1-2")
                         div(class="uk-form-controls")
-                            input(class="uk-input uk-button", id="form-accept", type="submit", value="Accept Order", formaction="/lookup/accept")
+                            input(class="uk-input uk-button", id="form-accept", type="submit", value="Accept Order", formaction="#{ticketNumber}/accept")
                     div(class="uk-card  uk-card-body uk-width-1-2")
                         div(class="uk-form-controls")
-                            input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="/lookup/reject")
+                            input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="#{ticketNumber}/reject")
