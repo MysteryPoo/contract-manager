@@ -36,6 +36,9 @@ router.post('/', async function(req, res, next) {
         orderRef = ordersRefQuery.docs[0].data();
         ticketNumber = Number(orderRef['TicketNumber']) + 1;
     }
+    if (req.body.ticketNumber) {
+        ticketNumber = req.body.ticketNumber;
+    }
 
     const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
     const priceRef = priceRefQuery.docs[0].data();
