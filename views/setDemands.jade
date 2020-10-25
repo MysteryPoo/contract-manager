@@ -1,6 +1,16 @@
 extends layout
 
 block content
+    if success.length > 0
+        for message in success
+            div(class="uk-alert-success", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    if error.length > 0
+        for message in error
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
     form(method="post", class="uk-form-horizontal")
         fieldset.uk-fieldset
             legend.uk-legend Set Demands
