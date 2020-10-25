@@ -51,7 +51,10 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Set Prices`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
         donate: config['Donation Enabled'],
+        success: req.flash('success'),
+        error: req.flash('error'),
         weights: weights,
         materialList: materialList
     });
@@ -64,8 +67,6 @@ router.post('/', async function(req, res, next) {
         return;
     }
 
-    let message = "OK";
-
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
         let error = "Fatal error: No server configuration found.";
@@ -76,7 +77,6 @@ router.post('/', async function(req, res, next) {
     const config = configRefQuery.data();
 
     if (req.body['form-password'] === config['Password']) {
-        console.log("Password OK");
 
         const dateEntered = new Date().toISOString();
         const docRef = db.collection(collections["Price-List"]).doc(dateEntered);
@@ -95,10 +95,12 @@ router.post('/', async function(req, res, next) {
         }
 
         await docRef.set(priceList);
+
+        req.flash('success', "Updated prices");
     } else {
-        message = "BAD PASSWORD";
+        req.flash('error', "BAD PASSWORD");
     }
-    res.send(message);
+    res.redirect(req.baseUrl);
 });
 
 module.exports = router;
