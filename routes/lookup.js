@@ -320,14 +320,14 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
     }
 
     if (status === '') {
-        req.flash('error', "Option not understood.");
+        req.flash('error', "Operation not supported.");
         res.redirect('/');
         return;
     }
     await db.collection(collections[`${contractTypeCap}-Orders`]).doc(ticketNumber.toString()).update({
         'Status': status
     });
-    req.flash('success', `Ticket number (${ticketNumber})(${contractTypeCap}) accepted and moved to ${status} status.`);
+    req.flash('success', `Ticket [${ticketNumber}] moved to ${status} status.`);
     res.redirect(`${req.baseUrl}/${contractType}/${ticketNumber}`);
 });
 
