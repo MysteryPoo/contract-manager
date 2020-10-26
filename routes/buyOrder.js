@@ -32,7 +32,8 @@ router.get('/', async function(req, res, next) {
   if (priceRefQuery.empty) {
     const error = "Fatal error: No price list found.";
     console.log(error);
-    res.send(error);
+    req.flash('error', error);
+    res.redirect('/');
     return;
   }
   const priceRef = priceRefQuery.docs[0].data();
@@ -41,7 +42,8 @@ router.get('/', async function(req, res, next) {
   if (demandRefQuery.empty) {
     const error = "Fatal error: No demand list found.";
     console.log(error);
-    res.send(error);
+    req.flash('error', error);
+    res.redirect('/');
     return;
   }
   const demandRef = demandRefQuery.docs[0].data();
@@ -125,6 +127,7 @@ router.get('/:ticketNumber', async function(req, res, next) {
     console.log(error);
     req.flash('error', error);
     res.redirect(req.baseUrl);
+    return;
   }
   const orderRef = orderRefQuery.docs[0].data();
 
@@ -177,7 +180,6 @@ router.get('/:ticketNumber', async function(req, res, next) {
       materialList[category][materialNoSpace]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
       materialList[category][materialNoSpace]['demand'] = demand;
       materialList[category][materialNoSpace]['units'] = orderRef[material];
-      console.log(`${material}: ${orderRef[material]}`)
     }
   }
 
@@ -187,7 +189,8 @@ router.get('/:ticketNumber', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
-    materialList: materialList
+    materialList: materialList,
+    ticketNumber: ticketNumber
   });
 });
 

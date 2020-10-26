@@ -35,19 +35,30 @@ block content
     div(class="uk-card uk-card-body")
         h3(class="uk-card-title") Contract Total
         h4 #{Math.round(priceTotal).toLocaleString(undefined)} ISK
-    if user && user.isAdmin && status == "Pending"
-        form(method="post", class="uk-form-horizontal")
-            fieldset(class="uk-fieldset")
-                input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
-                input(type="hidden", id="form-type", name="formType", value=contractType)
-                div(class="uk-card uk-card-body uk-width-1-1")
-                    h3(class="uk-card-title") Password
-                    div(class="uk-form-controls")
-                        input(class="uk-input", id="form-password", name="formPassword", type="password", required="true")
-                div(class="uk-grid uk-child-width-auto")
-                    div(class="uk-card  uk-card-body uk-width-1-2")
+    if user
+        if user.isAdmin && status == "Pending"
+            form(method="post", class="uk-form-horizontal")
+                fieldset(class="uk-fieldset")
+                    input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
+                    input(type="hidden", id="form-type", name="formType", value=contractType)
+                    div(class="uk-card uk-card-body uk-width-1-1")
+                        h3(class="uk-card-title") Password
                         div(class="uk-form-controls")
-                            input(class="uk-input uk-button", id="form-accept", type="submit", value="Accept Order", formaction="#{ticketNumber}/accept")
-                    div(class="uk-card  uk-card-body uk-width-1-2")
-                        div(class="uk-form-controls")
-                            input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="#{ticketNumber}/reject")
+                            input(class="uk-input", id="form-password", name="formPassword", type="password", required="true")
+                    div(class="uk-grid uk-child-width-auto")
+                        div(class="uk-card  uk-card-body uk-width-1-2")
+                            div(class="uk-form-controls")
+                                input(class="uk-input uk-button", id="form-accept", type="submit", value="Accept Order", formaction="#{ticketNumber}/accept")
+                        div(class="uk-card  uk-card-body uk-width-1-2")
+                            div(class="uk-form-controls")
+                                input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="#{ticketNumber}/reject")
+        if user.CharacterName == characterName && status != 'Cancelled'
+            form(method="post", class="uk-form-horizontal")
+                fieldset(class="uk-fieldset")
+                    input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
+                    input(type="hidden", id="form-type", name="formType", value=contractType)
+                    div(class="uk-grid uk-child-width-auto")
+                        div(class="uk-card  uk-card-body uk-width-1-2")
+                            div(class="uk-form-controls")
+                                input(class="uk-input uk-button", id="form-accept", type="submit", value="Cancel Order", formaction="#{ticketNumber}/cancel")
+                        div(class="uk-card  uk-card-body uk-width-1-2")
