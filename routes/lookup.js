@@ -50,13 +50,15 @@ router.get('/', async function(req, res, next) {
             'preview': [],
             'pending': [],
             'accepted': [],
-            'rejected': []
+            'rejected': [],
+            'cancelled': []
         },
         'buy': {
             'preview': [],
             'pending': [],
             'accepted': [],
-            'rejected': []
+            'rejected': [],
+            'cancelled': []
         }
     };
     for (let type of [sellOrderRefs, buyOrderRefs]) {
@@ -126,13 +128,15 @@ router.get('/myOrders', async function(req, res, next) {
             'pending': [],
             'preview': [],
             'accepted': [],
-            'rejected': []
+            'rejected': [],
+            'cancelled': []
         },
         'buy': {
             'pending': [],
             'preview': [],
             'accepted': [],
-            'rejected': []
+            'rejected': [],
+            'cancelled': []
         }
     };
     for (let type of [sellOrderRefs, buyOrderRefs]) {
@@ -188,12 +192,15 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
         console.log(error);
         req.flash('error', error);
         res.redirect(req.baseUrl);
+        return;
     }
     const orderRef = orderRefQuery.docs[0].data();
 
     if (orderRef['Status'] === 'Preview' && req.user && req.user.CharacterName === orderRef['CharacterName']) {
         if (req.params.type === 'buy') {
             res.redirect(`/buyOrder/${ticketNumber}`);
+        } else if (req.params.type === 'sell') {
+            res.redirect(`/sellOrder/${ticketNumber}`);
         }
         return;
     }
@@ -266,16 +273,16 @@ router.get('/:type/:ticketNumber', async function(req, res, next) {
 
 router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
 
-    if (!req.user || !req.user.isAdmin) {
-        res.redirect('/');
-        return;
-    }
-
     const contractType = req.params.type;
     const contractTypeCap = req.params.type.charAt(0).toUpperCase() + req.params.type.slice(1).toLowerCase();
     const ticketNumber = Number(req.params.ticketNumber);
     const password = req.body.formPassword;
     const option = req.params.option;
+
+    if (!req.user) {
+        res.redirect('/');
+        return;
+    }
 
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
@@ -286,29 +293,41 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
-    if (password === config['Password']) {
-        const orderRefQuery = await db.collection(collections[`${contractTypeCap}-Orders`]).where('TicketNumber', "==", ticketNumber).get();
-        if (orderRefQuery.empty) {
-            let error = `Cannot find order with ticket number: ${ticketNumber}`;
-            console.log(error);
-            req.flash('error', error);
-            res.redirect(req.baseUrl);
-        }
-        let orderRef = orderRefQuery.docs[0].data();
-
-        if (orderRef['Status'] !== "Pending") {
-            let error = `You cannot modify this order ${ticketNumber}`;
-            console.log(error);
-            req.flash('error', error);
-        }
-    
-        await db.collection(collections[`${contractTypeCap}-Orders`]).doc(ticketNumber.toString()).update({
-            'Status': option === 'accept' ? 'Accepted' : 'Rejected'
-        });
-        req.flash('success', `Ticket number (${ticketNumber})(${contractTypeCap}) accepted and moved to ${option === 'accept' ? 'Accepted' : 'Rejected'} status.`);
-    } else {
-        req.flash('error', "BAD PASSWORD");
+    const orderRefQuery = await db.collection(collections[`${contractTypeCap}-Orders`]).where('TicketNumber', "==", ticketNumber).get();
+    if (orderRefQuery.empty) {
+        let error = `Cannot find order with ticket number: ${ticketNumber}`;
+        console.log(error);
+        req.flash('error', error);
+        res.redirect(req.baseUrl);
     }
+    let orderRef = orderRefQuery.docs[0].data();
+
+    if (orderRef['Status'] !== "Pending") {
+        let error = `You cannot modify this order ${ticketNumber}`;
+        console.log(error);
+        req.flash('error', error);
+        res.redirect(`${req.baseUrl}/${contractType}/${ticketNumber}`);
+        return;
+    }
+
+    let status = '';
+    if (option === 'accept' && req.user.isAdmin) {
+        status = 'Accepted';
+    } else if (option === 'reject' && req.user.isAdmin) {
+        status = 'Rejected';
+    } else if (option === 'cancel' && req.user.CharacterName === orderRef['CharacterName']) {
+        status = 'Cancelled';
+    }
+
+    if (status === '') {
+        req.flash('error', "Option not understood.");
+        res.redirect('/');
+        return;
+    }
+    await db.collection(collections[`${contractTypeCap}-Orders`]).doc(ticketNumber.toString()).update({
+        'Status': status
+    });
+    req.flash('success', `Ticket number (${ticketNumber})(${contractTypeCap}) accepted and moved to ${status} status.`);
     res.redirect(`${req.baseUrl}/${contractType}/${ticketNumber}`);
 });
 

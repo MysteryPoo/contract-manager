@@ -30,14 +30,20 @@ router.post('/', async function(req, res, next) {
     }
 
     let ticketNumber = 1;
-    const ordersRefQuery = await db.collection(collections['Buy-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
-    let orderRef = undefined;
-    if (!ordersRefQuery.empty) {
-        orderRef = ordersRefQuery.docs[0].data();
-        ticketNumber = Number(orderRef['TicketNumber']) + 1;
-    }
-    if (req.body.ticketNumber) {
-        ticketNumber = req.body.ticketNumber;
+    if (req.body.ticketNumber && req.user) {
+        const ordersRefQuery = await db.collection(collections['Buy-Orders']).where("TicketNumber", "==", Number(req.body.ticketNumber)).limit(1).get();
+        if (!ordersRefQuery.empty) {
+            let orderRef = ordersRefQuery.docs[0].data();
+            if (req.user.CharacterName === orderRef['CharacterName']) {
+                ticketNumber = Number(req.body.ticketNumber);
+            }
+        }
+    } else {
+        const ordersRefQuery = await db.collection(collections['Buy-Orders']).orderBy("TicketNumber", "desc").limit(1).get();
+        if (!ordersRefQuery.empty) {
+            let orderRef = ordersRefQuery.docs[0].data();
+            ticketNumber = Number(orderRef['TicketNumber']) + 1;
+        }
     }
 
     const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
@@ -136,7 +142,9 @@ router.post('/confirm', async function(req, res, next) {
     if (orderRef['Status'] !== "Preview") {
         let error = `You cannot modify this order ${ticketNumber}`;
         console.log(error);
-        res.send(error);
+        req.flash('error', error);
+        res.redirect('/');
+        return;
     }
 
     await db.collection(collections['Buy-Orders']).doc(ticketNumber).update({

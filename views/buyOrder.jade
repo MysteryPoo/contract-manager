@@ -3,6 +3,8 @@ extends layout
 block content
   form(action="/buyContract", method="post", class="uk-form-horizontal")
     fieldset.uk-fieldset
+      if ticketNumber
+        input(type="hidden", value=ticketNumber, name="ticketNumber")
       div(class="uk-flex uk-flex-center uk-margin")
         div(class="uk-card uk-card-body uk-width-1-1")
           h3(class="uk-card-title") Character Name
