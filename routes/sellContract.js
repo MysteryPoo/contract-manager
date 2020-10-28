@@ -95,7 +95,7 @@ router.post('/', async function(req, res, next) {
     await db.collection(collections['Sell-Orders']).doc(ticketNumber.toString()).set(order);
 
     res.render('sellContract', {
-        title: `${config['Organization']} Sell Contract`,
+        title: `${config['Organization']} Sell Contract -- Preview`,
         banner: process.env.banner,
         logo: process.env.logo,
         user: req.user,
@@ -201,7 +201,7 @@ router.post('/confirm', async function(req, res, next) {
     priceTotal *= priceRef['Sell Weight'];
 
     res.render('sellContract', {
-        title: `${config['Organization']} Sell Contract`,
+        title: `${config['Organization']} Sell Contract - Confirmed`,
         banner: process.env.banner,
         logo: process.env.logo,
         user: req.user,
