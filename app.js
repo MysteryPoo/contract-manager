@@ -4,7 +4,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const admin = require('firebase-admin');
-const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
@@ -17,10 +16,11 @@ admin.initializeApp({
 });
 
 const initializePassport = require('./passport-config');
+const authentication = require('./authentication');
 initializePassport(
   passport,
-  email => cache.users.find(user => user.email === email),
-  id => cache.users.find(user => user.id === id)
+  authentication.getUserByCharacterName,
+  authentication.getUserById
 );
 
 const indexRouter = require('./routes/menu');
@@ -41,9 +41,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(flash());
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -53,7 +54,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/setPrices', checkAuthenticated, pricesRouter);
@@ -67,6 +67,9 @@ app.use('/login', checkNotAuthenticated, loginRouter);
 app.use('/register', checkNotAuthenticated, registerRouter);
 
 app.get('/logout', (req, res) => {
+  if (req.user) {
+    delete cache.users[req.user.id];
+  }
   req.logOut();
   res.redirect('/');
 });
