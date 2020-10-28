@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
+const cache = require('../cache');
 
 const admin = require('firebase-admin');
 
@@ -116,6 +117,8 @@ router.post('/', async function(req, res, next) {
     }
 
     await docRef.set(demandDoc);
+
+    cache.demandDoc = demandDoc;
     
     req.flash('success', "Updated demands");
     res.redirect(req.baseUrl);

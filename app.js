@@ -33,6 +33,7 @@ const buyOrderRouter = require('./routes/buyOrder');
 const lookupRouter = require('./routes/lookup');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
+const apiRouter = require('./routes/api');
 
 var app = express();
 
@@ -65,6 +66,7 @@ app.use('/sellOrder', sellOrderRouter);
 app.use('/buyOrder', buyOrderRouter);
 app.use('/login', checkNotAuthenticated, loginRouter);
 app.use('/register', checkNotAuthenticated, registerRouter);
+app.use('/api', apiRouter);
 
 app.get('/logout', (req, res) => {
   if (req.user) {

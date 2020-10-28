@@ -199,59 +199,7 @@ router.get('/:ticketNumber', async function(req, res, next) {
 });
 
 router.get('/csv', async function(req, res, next) {
-  const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
-  if (priceRefQuery.empty) {
-    const error = "Fatal error: No price list found.";
-    console.log(error);
-    res.send(error);
-    return;
-  }
-  const priceRef = priceRefQuery.docs[0].data();
-
-  const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
-  if (demandRefQuery.empty) {
-    const error = "Fatal error: No demand list found.";
-    console.log(error);
-    res.send(error);
-    return;
-  }
-  const demandRef = demandRefQuery.docs[0].data();
-
-  let sellWeight = Number(priceRef['Sell Weight']);
-  let buyWeight = Number(priceRef['Buy Weight']);
-
-  let returnValue = "";
-
-  // Global data
-  returnValue += "Sell Weight, Buy Weight, Price-DateTime, Demand-DateTime,";
-  returnValue += "\n";
-  returnValue += `${sellWeight}, ${buyWeight}, ${priceRef['DateTime']}, ${demandRef['DateTime']},`;
-  returnValue += "\n";
-
-  // Material Data
-  returnValue += "Material Name, Material Base Price, Buy Demand Multiplier, Sell Demand Multiplier,";
-  returnValue += "\n";
-
-  for (let category in materials) {
-    for (let material of materials[category]) {
-      let basePrice = priceRef[material] || 0;
-      let buyDemand = Object.keys(demandRef['Demands'])[0];
-      let sellDemand = Object.keys(demandRef['Demands'])[0];
-      // Backwards compatibility
-      if (typeof demandRef[material] === "string") {
-          buyDemand = sellDemand = demandRef[material];
-      } else if (demandRef[material] !== undefined) {
-          buyDemand = demandRef[material]['Buy'];
-          sellDemand = demandRef[material]['Sell'];
-      }
-      // End of backwards compatibility
-      returnValue += `${material}, ${basePrice}, ${demandRef['Demands'][buyDemand]}, ${demandRef['Demands'][sellDemand]},`;
-      returnValue += "\n";
-    }
-  }
-
-  res.set('Content-Type', 'text/plain');
-  res.send(returnValue);
+  redirect('/api/csv');
 });
 
 module.exports = router;

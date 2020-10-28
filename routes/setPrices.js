@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
+const cache = require('../cache');
 
 const admin = require('firebase-admin');
 
@@ -86,6 +87,8 @@ router.post('/', async function(req, res, next) {
     }
 
     await docRef.set(priceList);
+
+    cache.priceList = priceList;
 
     req.flash('success', "Updated prices");
     res.redirect(req.baseUrl);
