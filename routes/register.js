@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
+const authentication = require('../authentication');
 
 const admin = require('firebase-admin');
 const db = admin.firestore();
@@ -32,19 +33,15 @@ router.get('/', async function(req, res, next) {
 router.post('/', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        console.log(hashedPassword);
-        cache.users.push({
-            id: req.body.charactername,
-            CharacterName: req.body.charactername,
-            DiscordName: req.body.discordname,
-            email: req.body.email,
+        await authentication.createUser({
+            id: req.body.CharacterName,
+            CharacterName: req.body.CharacterName,
+            DiscordName: req.body.DiscordName,
             password: hashedPassword,
             isAdmin: false
         });
         req.flash('success', 'User created successfully');
         res.redirect('/login');
-
-        console.log(cache.users);
     } catch (e) {
         console.log(e);
         req.flash('error', 'Unable to create user');
