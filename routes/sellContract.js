@@ -124,6 +124,7 @@ router.post('/confirm', async function(req, res, next) {
             title: `${config['Organization']} Sell Contract`,
             banner: process.env.banner,
             logo: process.env.logo,
+            user: req.user,
             feature: "Sell Order"
         });
         return;

@@ -23,6 +23,7 @@ router.get('/', async function(req, res, next) {
       title: `${config['Organization']} Buy Contract`,
       banner: process.env.banner,
       logo: process.env.logo,
+      user: req.user,
       feature: "Buy Order"
     });
     return;
@@ -114,6 +115,7 @@ router.get('/:ticketNumber', async function(req, res, next) {
       title: `${config['Organization']} Buy Contract`,
       banner: process.env.banner,
       logo: process.env.logo,
+      user: req.user,
       feature: "Buy Order"
     });
     return;
