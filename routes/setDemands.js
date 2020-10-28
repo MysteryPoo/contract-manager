@@ -10,6 +10,7 @@ const db = admin.firestore();
 router.get('/', async function(req, res, next) {
 
     if (!req.user || !req.user.isAdmin) {
+        req.flash('error', "Insufficient permissions for operation.");
         res.redirect('/');
         return;
     }
@@ -83,53 +84,40 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
 
     if (!req.user || !req.user.isAdmin) {
+        req.flash('error', "Insufficient permissions for operation.");
         res.redirect('/');
         return;
     }
 
-    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
-    if (configRefQuery.empty) {
-        let error = "Fatal error: No server configuration found.";
-        console.log(error);
-        res.send(error);
-        return;
+    const dateEntered = new Date().toISOString();
+    const docRef = db.collection(collections['Demand-List']).doc(dateEntered);
+
+    let demandCount = Number(req.body['demand-count']);
+    let demands =  {};
+    for (let i = 1; i <= demandCount; ++i) {
+        let name = req.body[`demand-${i}-name`];
+        let value = Number(req.body[`demand-${i}-value`]);
+        demands[name] = value;
     }
-    const config = configRefQuery.data();
 
-    if (req.body['form-password'] === config['Password']) {
+    let demandDoc = {
+        'DateTime': dateEntered,
+        'Demands': demands
+    };
 
-        const dateEntered = new Date().toISOString();
-        const docRef = db.collection(collections['Demand-List']).doc(dateEntered);
-
-        let demandCount = Number(req.body['demand-count']);
-        let demands =  {};
-        for (let i = 1; i <= demandCount; ++i) {
-            let name = req.body[`demand-${i}-name`];
-            let value = Number(req.body[`demand-${i}-value`]);
-            demands[name] = value;
-        }
-
-        let demandDoc = {
-            'DateTime': dateEntered,
-            'Demands': demands
-        };
-
-        for (let category in materials) {
-            for (let material of materials[category]) {
-                let materialNoSpace = material.replace(/ /g, "");
-                demandDoc[material] = {
-                    'Buy': req.body[`form-buy-${materialNoSpace}`],
-                    'Sell': req.body[`form-sell-${materialNoSpace}`]
-                }
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            demandDoc[material] = {
+                'Buy': req.body[`form-buy-${materialNoSpace}`],
+                'Sell': req.body[`form-sell-${materialNoSpace}`]
             }
         }
-
-        await docRef.set(demandDoc);
-        
-        req.flash('success', "Updated demands");
-    } else {
-        req.flash('error', "BAD PASSWORD");
     }
+
+    await docRef.set(demandDoc);
+    
+    req.flash('success', "Updated demands");
     res.redirect(req.baseUrl);
 });
 
