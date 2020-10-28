@@ -276,7 +276,6 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
     const contractType = req.params.type;
     const contractTypeCap = req.params.type.charAt(0).toUpperCase() + req.params.type.slice(1).toLowerCase();
     const ticketNumber = Number(req.params.ticketNumber);
-    const password = req.body.formPassword;
     const option = req.params.option;
 
     if (!req.user) {
@@ -302,33 +301,25 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
     }
     let orderRef = orderRefQuery.docs[0].data();
 
-    if (orderRef['Status'] !== "Pending") {
-        let error = `You cannot modify this order ${ticketNumber}`;
-        console.log(error);
-        req.flash('error', error);
-        res.redirect(`${req.baseUrl}/${contractType}/${ticketNumber}`);
-        return;
-    }
-
     let status = '';
-    if (option === 'accept' && req.user.isAdmin) {
+    if (option === 'accept' && req.user.isAdmin && orderRef['Status'] === "Pending") {
         status = 'Accepted';
-    } else if (option === 'reject' && req.user.isAdmin) {
+    } else if (option === 'reject' && req.user.isAdmin && orderRef['Status'] === "Pending") {
         status = 'Rejected';
-    } else if (option === 'cancel' && req.user.CharacterName === orderRef['CharacterName']) {
+    } else if (option === 'cancel' && req.user.CharacterName === orderRef['CharacterName'] && (orderRef['Status'] === "Preview" || orderRef['Status'] === "Pending")) {
         status = 'Cancelled';
     }
 
     if (status === '') {
-        req.flash('error', "Operation not supported.");
-        res.redirect('/');
+        req.flash('error', `You cannot modify this order ${ticketNumber}`);
+        res.redirect(`/lookup/${contractType}/${ticketNumber}`);
         return;
     }
     await db.collection(collections[`${contractTypeCap}-Orders`]).doc(ticketNumber.toString()).update({
         'Status': status
     });
     req.flash('success', `Ticket [${ticketNumber}] moved to ${status} status.`);
-    res.redirect(`${req.baseUrl}/${contractType}/${ticketNumber}`);
+    res.redirect(`/lookup/${contractType}/${ticketNumber}`);
 });
 
 module.exports = router;
