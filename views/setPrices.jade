@@ -1,6 +1,16 @@
 extends layout
 
 block content
+    if success.length > 0
+        for message in success
+            div(class="uk-alert-success", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    if error.length > 0
+        for message in error
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
     form(method="post", class="uk-form-horizontal")
         fieldset.uk-fieldset
 
@@ -14,10 +24,6 @@ block content
             ul(class="uk-switcher")
                 li
                     div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
-                        div(class="uk-card uk-card-body")
-                            h3(class="uk-card-title") Password
-                            div(class="uk-form-controls")
-                                input(class="uk-input", id="form-password", name="form-password", type="password", required="true")
                         
                         div(class="uk-card uk-card-body uk-margin")
                             h3(class="uk-card-title") Sell Order Weight

@@ -9,11 +9,11 @@ block content
         each orderType in ['Buy', 'Sell']
             div(class='uk-margin')
                 ul(class="uk-subnav uk-subnav-pill", uk-switcher)
-                    each state in ['Pending', 'Accepted', 'Rejected']
+                    each state in ['Pending', 'Accepted', 'Rejected', 'Preview']
                         li
                             a(href="#") #{state}
                 ul(class="uk-switcher uk-margin")
-                    each state in ['pending', 'accepted', 'rejected']
+                    each state in ['pending', 'accepted', 'rejected', 'preview']
                         li
                             table(class="uk-table")
                                 thead

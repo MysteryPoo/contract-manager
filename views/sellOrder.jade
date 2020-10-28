@@ -3,17 +3,25 @@ extends layout
 block content
   form(action="/sellContract", method="post", class="uk-form-horizontal")
     fieldset.uk-fieldset
+      if ticketNumber
+          input(type="hidden", value=ticketNumber, name="ticketNumber")
       div(class="uk-flex uk-flex-center uk-margin")
         div(class="uk-card uk-card-body uk-width-1-1")
           h3(class="uk-card-title") Character Name
           div(class="uk-form-controls")
-            input(class="uk-input", id="form-character-name", name="form-character-name", type="text", required="true")
+            if user
+              input(class="uk-input", id="form-character-name", name="form-character-name", type="text", value=user.CharacterName, required="true", readonly)
+            else
+              input(class="uk-input", id="form-character-name", name="form-character-name", type="text", required="true")
       div(class="uk-flex uk-flex-center uk-margin")
         div(class="uk-card uk-card-body uk-width-1-1")
           h3(class="uk-card-title") Discord Name
           p (Actual name, e.g. asdf#1234)
           div(class="uk-form-controls")
-            input(class="uk-input", id="form-discord-name", name="form-discord-name", type="text", required="true")
+            if user
+              input(class="uk-input", id="form-discord-name", name="form-discord-name", type="text", value=user.DiscordName, required="true", readonly)
+            else
+              input(class="uk-input", id="form-discord-name", name="form-discord-name", type="text", required="true")
       
       ul(class="uk-subnav uk-subnav-pill", uk-switcher)
         each list, material in materialList
@@ -32,7 +40,10 @@ block content
                     p Demand: #{val['demand']}
                     label(class="uk-form-label", for="form-#{key}") Units
                     div(class="uk-form-controls")
-                      input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
+                      if val['units']
+                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value=val['units'], required="true")
+                      else
+                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
 
       div(class="uk-card uk-card-body uk-width-1-1")
         div(class="uk-form-controls")
