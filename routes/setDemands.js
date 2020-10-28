@@ -1,13 +1,20 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
+const cache = require('../cache');
 
 const admin = require('firebase-admin');
 
 const db = admin.firestore();
 
 router.get('/', async function(req, res, next) {
+
+    if (!req.user || !req.user.isAdmin) {
+        req.flash('error', "Insufficient permissions for operation.");
+        res.redirect('/');
+        return;
+    }
 
     const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
     if (configRefQuery.empty) {
@@ -66,6 +73,9 @@ router.get('/', async function(req, res, next) {
         title: `${config['Organization']} Set Demands`,
         banner: process.env.banner,
         logo: process.env.logo,
+        user: req.user,
+        success: req.flash('success'),
+        error: req.flash('error'),
         donate: config['Donation Enabled'],
         demands: demands,
         materialList: materialList
@@ -73,53 +83,45 @@ router.get('/', async function(req, res, next) {
 });
 
 router.post('/', async function(req, res, next) {
-    let message = "OK";
 
-    console.log(req.body);
-
-    const configRefQuery = await db.collection(collections['Settings']).doc('Config').get();
-    if (configRefQuery.empty) {
-        let error = "Fatal error: No server configuration found.";
-        console.log(error);
-        res.send(error);
+    if (!req.user || !req.user.isAdmin) {
+        req.flash('error', "Insufficient permissions for operation.");
+        res.redirect('/');
         return;
     }
-    const config = configRefQuery.data();
 
-    if (req.body['form-password'] === config['Password']) {
-        console.log("Password OK");
+    const dateEntered = new Date().toISOString();
+    const docRef = db.collection(collections['Demand-List']).doc(dateEntered);
 
-        const dateEntered = new Date().toISOString();
-        const docRef = db.collection(collections['Demand-List']).doc(dateEntered);
+    let demandCount = Number(req.body['demand-count']);
+    let demands =  {};
+    for (let i = 1; i <= demandCount; ++i) {
+        let name = req.body[`demand-${i}-name`];
+        let value = Number(req.body[`demand-${i}-value`]);
+        demands[name] = value;
+    }
 
-        let demandCount = Number(req.body['demand-count']);
-        let demands =  {};
-        for (let i = 1; i <= demandCount; ++i) {
-            let name = req.body[`demand-${i}-name`];
-            let value = Number(req.body[`demand-${i}-value`]);
-            demands[name] = value;
-        }
+    let demandDoc = {
+        'DateTime': dateEntered,
+        'Demands': demands
+    };
 
-        let demandDoc = {
-            'DateTime': dateEntered,
-            'Demands': demands
-        };
-
-        for (let category in materials) {
-            for (let material of materials[category]) {
-                let materialNoSpace = material.replace(/ /g, "");
-                demandDoc[material] = {
-                    'Buy': req.body[`form-buy-${materialNoSpace}`],
-                    'Sell': req.body[`form-sell-${materialNoSpace}`]
-                }
+    for (let category in materials) {
+        for (let material of materials[category]) {
+            let materialNoSpace = material.replace(/ /g, "");
+            demandDoc[material] = {
+                'Buy': req.body[`form-buy-${materialNoSpace}`],
+                'Sell': req.body[`form-sell-${materialNoSpace}`]
             }
         }
-
-        await docRef.set(demandDoc);
-    } else {
-        message = "BAD PASSWORD";
     }
-    res.send(message);
+
+    await docRef.set(demandDoc);
+
+    cache.demandDoc = demandDoc;
+    
+    req.flash('success', "Updated demands");
+    res.redirect(req.baseUrl);
 });
 
 module.exports = router;
