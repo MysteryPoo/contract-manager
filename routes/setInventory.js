@@ -76,7 +76,10 @@ router.post('/', async function(req, res, next) {
     for (let category in materials) {
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
-            stockList[material] = Number(req.body[`form-${materialNoSpace}`]);
+            let inventory = Number(req.body[`form-${materialNoSpace}`]);
+            if (inventory > 0) {
+                stockList[material] = inventory;
+            }
         }
     }
 
