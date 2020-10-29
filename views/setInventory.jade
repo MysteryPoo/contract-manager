@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    if success.length > 0
+        for message in success
+            div(class="uk-alert-success", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    if error.length > 0
+        for message in error
+            div(class="uk-alert-danger", uk-alert)
+                a(class="uk-alert-close", uk-close)
+                p= message
+    form(method="post", class="uk-form-horizontal")
+        fieldset.uk-fieldset
+
+            ul(class="uk-subnav uk-subnav-pill", uk-switcher)
+                li
+                    a(href="#") Settings
+                each list, material in materialList
+                    li
+                        a(href="#") #{material}
+            
+            ul(class="uk-switcher")
+                li
+                    div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
+                each list, material in materialList
+                    li
+                        div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
+                            each val, key in list
+                                div(class="uk-card uk-card-body")
+                                    h3(class="uk-card-title") #{key}
+                                    img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                                    p Current Stock: #{val.toLocaleString(undefined)} Units
+                                    label(class="uk-form-label", for="form-#{key}") New Stock
+                                    div(class="uk-form-controls")
+                                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}", required="true")
+            
+            div(class="uk-card uk-card-body uk-width-1-1")
+                div(class="uk-form-controls")
+                    input(class="uk-input uk-button", id="form-submit", type="submit", value="Set Inventory", formaction="")
+

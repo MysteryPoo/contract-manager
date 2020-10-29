@@ -34,6 +34,7 @@ const lookupRouter = require('./routes/lookup');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
 const apiRouter = require('./routes/api');
+const stockRouter = require('./routes/setInventory');
 
 var app = express();
 
@@ -67,6 +68,7 @@ app.use('/buyOrder', buyOrderRouter);
 app.use('/login', checkNotAuthenticated, loginRouter);
 app.use('/register', checkNotAuthenticated, registerRouter);
 app.use('/api', apiRouter);
+app.use('/setInventory', checkAuthenticated, stockRouter);
 
 app.get('/logout', (req, res) => {
   if (req.user) {

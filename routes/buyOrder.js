@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
+const cache = require('../cache');
 
 const admin = require('firebase-admin');
 
@@ -49,6 +50,13 @@ router.get('/', async function(req, res, next) {
   }
   const demandRef = demandRefQuery.docs[0].data();
 
+  let stockRef = cache.stockList;
+  if (!stockRef) {
+    const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+    stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
+    cache.stockList = stockRef;
+  }
+
   let materialList = {};
 
   let sellWeight = Number(priceRef['Sell Weight']);
@@ -88,7 +96,8 @@ router.get('/', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
-    materialList: materialList
+    materialList: materialList,
+    stockList: stockRef
   });
     
 });
@@ -151,6 +160,18 @@ router.get('/:ticketNumber', async function(req, res, next) {
   }
   const demandRef = demandRefQuery.docs[0].data();
 
+  let stockRef = cache.stockList;
+  if (!stockRef) {
+    const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+    if (stockRefQuery.empty) {
+        const error = "No inventory list found.";
+        req.flash('error', error);
+        console.log(error);
+    }
+    stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
+    cache.stockList = stockRef;
+  }
+
   let materialList = {};
 
   let sellWeight = Number(priceRef['Sell Weight']);
@@ -192,6 +213,7 @@ router.get('/:ticketNumber', async function(req, res, next) {
     user: req.user,
     donate: config['Donation Enabled'],
     materialList: materialList,
+    stockList: stockRef,
     ticketNumber: ticketNumber
   });
 });

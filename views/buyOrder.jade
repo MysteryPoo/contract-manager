@@ -38,12 +38,15 @@ block content
                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
                     p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
                     p Demand: #{val['demand']}
-                    label(class="uk-form-label", for="form-#{key}") Units
+                    - let unitCount = '0';
+                    - if (val['units']) unitCount = `${val['units']}`;
+                    - let maxValue = "";
+                    - if (stockList[key]) maxValue = `${stockList[key]}`;
+                    - let maxString = "";
+                    - if (stockList[key]) maxString = `In-Stock: ${stockList[key]}`;
+                    label(class="uk-form-label", for="form-#{key}") Units #{maxString}
                     div(class="uk-form-controls")
-                      if val['units']
-                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value=val['units'], required="true")
-                      else
-                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
+                      input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", max=maxValue, value=unitCount, required="true")
       
       div(class="uk-card uk-card-body uk-width-1-1")
         div(class="uk-form-controls")
