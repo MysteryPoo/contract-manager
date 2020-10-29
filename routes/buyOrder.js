@@ -25,6 +25,8 @@ router.get('/', async function(req, res, next) {
       banner: process.env.banner,
       logo: process.env.logo,
       user: req.user,
+      success: req.flash('success'),
+      error: req.flash('error'),
       feature: "Buy Order"
     });
     return;
@@ -96,6 +98,8 @@ router.get('/', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
+    success: req.flash('success'),
+    error: req.flash('error'),
     materialList: materialList,
     stockList: stockRef
   });
@@ -212,6 +216,8 @@ router.get('/:ticketNumber', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
+    success: req.flash('success'),
+    error: req.flash('error'),
     materialList: materialList,
     stockList: stockRef,
     ticketNumber: ticketNumber

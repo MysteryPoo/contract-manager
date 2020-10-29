@@ -4,7 +4,7 @@ var router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
 const admin = require('firebase-admin');
-const cache = require('../cache');
+const utility = require('../utility');
 
 const db = admin.firestore();
 
@@ -305,11 +305,16 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
     let status = '';
     if (option === 'accept' && req.user.isAdmin && orderRef['Status'] === "Pending") {
         status = 'Accepted';
-        await updateStock(orderRef, contractType === 'buy' ? true : false);
+        if (contractType === 'sell') {
+            await utility.updateStock(orderRef, false);
+        }
     } else if (option === 'reject' && req.user.isAdmin && orderRef['Status'] === "Pending") {
         status = 'Rejected';
     } else if (option === 'cancel' && req.user.CharacterName === orderRef['CharacterName'] && (orderRef['Status'] === "Preview" || orderRef['Status'] === "Pending")) {
         status = 'Cancelled';
+        if (contractType === 'buy') {
+            await utility.updateStock(orderRef, false);
+        }
     }
 
     if (status === '') { // This could just be an else, I guess
@@ -326,28 +331,3 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
 });
 
 module.exports = router;
-
-// Utility Functions
-async function updateStock(orderRef, isBuy) {
-
-    if (!cache.stockList) {
-        const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
-        if (stockRefQuery.empty) {
-            return;
-        }
-        cache.stockList = stockRefQuery.docs[0].data();
-    }
-
-    for (let category in materials) {
-        for (let material of materials[category]) {
-            if (cache.stockList[material]) {
-                cache.stockList[material] += orderRef[material] * (isBuy ? -1 : 1);
-            }
-        }
-    }
-
-    const dateEntered = new Date().toISOString();
-    cache.stockList['DateTime'] = dateEntered;
-    const docRef = db.collection(collections["Inventory"]).doc(dateEntered);
-    await docRef.set(cache.stockList);
-}
