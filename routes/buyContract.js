@@ -3,6 +3,7 @@ var router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
 const cache = require('../cache');
+const utility = require('../utility');
 
 const admin = require('firebase-admin');
 
@@ -213,6 +214,8 @@ router.post('/confirm', async function(req, res, next) {
         }
     }
     priceTotal *= priceRef['Buy Weight'];
+
+    utility.updateStock(orderRef, true);
 
     res.render('buyContract', {
         title: `${config['Organization']} Buy Contract -- Confirmed`,
