@@ -12,7 +12,6 @@ router.get('/csv', async function(req, res, next) {
 
     let priceRef = cache.priceList;
     if (!priceRef) {
-        console.log("Hitting database");
         const priceRefQuery = await db.collection(collections['Price-List']).orderBy("DateTime", "desc").limit(1).get();
         if (priceRefQuery.empty) {
         const error = "Fatal error: No price list found.";
@@ -26,7 +25,6 @@ router.get('/csv', async function(req, res, next) {
   
     let demandRef = cache.demandDoc;
     if (!demandRef) {
-        console.log("Hitting database");
         const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
         if (demandRefQuery.empty) {
         const error = "Fatal error: No demand list found.";

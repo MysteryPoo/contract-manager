@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const materials = require('../materials');
@@ -25,20 +26,15 @@ router.get('/', async function(req, res, next) {
     }
     const config = configRefQuery.data();
 
-    const priceRefQuery = await db.collection(collections["Price-List"]).orderBy("DateTime", "desc").limit(1).get();
-    if (priceRefQuery.empty) {
-        const error = "No price list found.";
+    const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+    if (stockRefQuery.empty) {
+        const error = "No inventory list found.";
         req.flash('error', error);
         console.log(error);
     }
-    const priceRef = priceRefQuery.empty ? {} : priceRefQuery.docs[0].data();
+    const stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
 
     let materialList = {};
-
-    let weights = {
-        'sell_weight': Number(priceRef['Sell Weight']),
-        'buy_weight': Number(priceRef['Buy Weight'])
-    };
 
     for (let category in materials) {
         for (let material of materials[category]) {
@@ -46,19 +42,18 @@ router.get('/', async function(req, res, next) {
             if (materialList[category] == undefined) {
                 materialList[category] = {};
             }
-            materialList[category][materialNoSpace] = priceRef[material] || 0;
+            materialList[category][materialNoSpace] = stockRef[material] || 0;
         }
     }
 
-    res.render('setPrices', {
-        title: `${config['Organization']} Set Prices`,
+    res.render('setInventory', {
+        title: `${config['Organization']} Set Inventory`,
         banner: process.env.banner,
         logo: process.env.logo,
         user: req.user,
         donate: config['Donation Enabled'],
         success: req.flash('success'),
         error: req.flash('error'),
-        weights: weights,
         materialList: materialList
     });
 });
@@ -72,26 +67,24 @@ router.post('/', async function(req, res, next) {
     }
 
     const dateEntered = new Date().toISOString();
-    const docRef = db.collection(collections["Price-List"]).doc(dateEntered);
+    const docRef = db.collection(collections["Inventory"]).doc(dateEntered);
 
-    var priceList = {
-        'DateTime': dateEntered,
-        'Sell Weight': Number(req.body['form-sell-weight']),
-        'Buy Weight': Number(req.body['form-buy-weight'])
+    var stockList = {
+        'DateTime': dateEntered
     };
 
     for (let category in materials) {
         for (let material of materials[category]) {
             let materialNoSpace = material.replace(/ /g, "");
-            priceList[material] = Number(req.body[`form-${materialNoSpace}`]);
+            stockList[material] = Number(req.body[`form-${materialNoSpace}`]);
         }
     }
 
-    await docRef.set(priceList);
+    await docRef.set(stockList);
 
-    cache.priceList = priceList;
+    cache.stockList = stockList;
 
-    req.flash('success', "Updated prices");
+    req.flash('success', "Updated inventory");
     res.redirect(req.baseUrl);
 });
 

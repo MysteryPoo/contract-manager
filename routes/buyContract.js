@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const materials = require('../materials');
 const collections = require('../collections');
+const cache = require('../cache');
 
 const admin = require('firebase-admin');
 
@@ -170,6 +171,14 @@ router.post('/confirm', async function(req, res, next) {
     }
     const demandRef = demandRefQuery.docs[0].data();
 
+    let stockRef = cache.stockList;
+    if (!stockRef) {
+        const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+        
+        stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
+        cache.stockList = stockRef;
+    }
+
     let priceTotal = 0;
 
     let materialOrder = {};
@@ -194,6 +203,12 @@ router.post('/confirm', async function(req, res, next) {
                 // End of backwards compatibility
                 let basePrice = priceRef[material] || 0;
                 priceTotal += orderRef[material] * basePrice * demandRef['Demands'][demand];
+
+                if (stockRef[material] < orderRef[material]) {
+                    req.flash('error', `Unable to fill order. Not enough ${material}.`);
+                    res.redirect(`/buyOrder/${ticketNumber}`);
+                    return;
+                }
             }
         }
     }

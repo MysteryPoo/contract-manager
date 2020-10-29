@@ -28,6 +28,7 @@ router.get('/', async function(req, res, next) {
     const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
     if (demandRefQuery.empty) {
         const error = "No demand list found.";
+        req.flash('error', error);
         console.log(error);
     }
     const demandRef = demandRefQuery.empty ? {
