@@ -312,7 +312,7 @@ router.post('/:type/:ticketNumber/:option', async function(req, res, next) {
         status = 'Rejected';
     } else if (option === 'cancel' && req.user.CharacterName === orderRef['CharacterName'] && (orderRef['Status'] === "Preview" || orderRef['Status'] === "Pending")) {
         status = 'Cancelled';
-        if (contractType === 'buy') {
+        if (contractType === 'buy' && orderRef['Status'] === "Pending") {
             await utility.updateStock(orderRef, false);
         }
     }
