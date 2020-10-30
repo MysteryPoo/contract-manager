@@ -75,8 +75,8 @@ router.get('/', async function(req, res, next) {
       if (materialList[category] == undefined) {
         materialList[category] = {};
       }
-      if (materialList[category][materialNoSpace] == undefined) {
-        materialList[category][materialNoSpace] = {};
+      if (materialList[category][material] == undefined) {
+        materialList[category][material] = {};
       }
       let demand = Object.keys(demandRef['Demands'])[0];
       // Backwards compatibility
@@ -87,8 +87,8 @@ router.get('/', async function(req, res, next) {
       }
       // End of backwards compatibility
       let basePrice = priceRef[material] || 0;
-      materialList[category][materialNoSpace]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
-      materialList[category][materialNoSpace]['demand'] = demand;
+      materialList[category][material]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
+      materialList[category][material]['demand'] = demand;
     }
   }
 
@@ -192,8 +192,8 @@ router.get('/:ticketNumber', async function(req, res, next) {
       if (materialList[category] == undefined) {
         materialList[category] = {};
       }
-      if (materialList[category][materialNoSpace] == undefined) {
-        materialList[category][materialNoSpace] = {};
+      if (materialList[category][material] == undefined) {
+        materialList[category][material] = {};
       }
       let demand = Object.keys(demandRef['Demands'])[0];
       // Backwards compatibility
@@ -204,9 +204,9 @@ router.get('/:ticketNumber', async function(req, res, next) {
       }
       // End of backwards compatibility
       let basePrice = priceRef[material] || 0;
-      materialList[category][materialNoSpace]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
-      materialList[category][materialNoSpace]['demand'] = demand;
-      materialList[category][materialNoSpace]['units'] = orderRef[material];
+      materialList[category][material]['price'] = basePrice * buyWeight * demandRef['Demands'][demand];
+      materialList[category][material]['demand'] = demand;
+      materialList[category][material]['units'] = orderRef[material];
     }
   }
 

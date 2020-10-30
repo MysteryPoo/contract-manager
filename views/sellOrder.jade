@@ -33,17 +33,18 @@ block content
           li
             div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
               each val, key in list
-                  div(class="uk-card uk-card-secondary uk-card-body")
-                    h3.uk-card-title #{key}
-                    img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                    p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
-                    p Demand: #{val['demand']}
-                    label(class="uk-form-label", for="form-#{key}") Units
-                    div(class="uk-form-controls")
-                      if val['units']
-                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value=val['units'], required="true")
-                      else
-                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="0", required="true")
+                - let keyNoSpace = key.replace(/ /g, "");
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{keyNoSpace}.png" class="uk-svg")
+                  p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
+                  p Demand: #{val['demand']}
+                  label(class="uk-form-label", for="form-#{kekeyNoSpacey}") Units
+                  div(class="uk-form-controls")
+                    if val['units']
+                      input(class="uk-input", id="form-#{keyNoSpace}", name="form-#{keyNoSpace}", type="number", min="0", value=val['units'], required="true")
+                    else
+                      input(class="uk-input", id="form-#{keyNoSpace}", name="form-#{keyNoSpace}", type="number", min="0", value="0", required="true")
 
       div(class="uk-card uk-card-body uk-width-1-1")
         div(class="uk-form-controls")

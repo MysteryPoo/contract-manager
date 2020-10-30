@@ -28,15 +28,16 @@ block content
                     li
                         div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
                             each val, key in list
+                                - let keyNoSpace = key.replace(/ /g, "");
                                 div(class="uk-card uk-card-body")
                                     h3(class="uk-card-title") #{key}
-                                    img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
+                                    img(width="100", height="", alt="", uk-img="data-src:/images/#{keyNoSpace}.png" class="uk-svg")
                                     - let currentStock = val !== false ? `${val.toLocaleString(undefined)} Units` : 'Disabled';
                                     - let storedValue = val !== false ? val : -1;
                                     p Current Stock: #{currentStock}
-                                    label(class="uk-form-label", for="form-#{key}") New Stock
+                                    label(class="uk-form-label", for="form-#{keyNoSpace}") New Stock
                                     div(class="uk-form-controls")
-                                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="-1", value="#{storedValue}", required="true")
+                                        input(class="uk-input", id="form-#{keyNoSpace}", name="form-#{keyNoSpace}", type="number", min="-1", value="#{storedValue}", required="true")
             
             div(class="uk-card uk-card-body uk-width-1-1")
                 div(class="uk-form-controls")

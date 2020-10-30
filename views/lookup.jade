@@ -48,7 +48,7 @@ block content
                         div(class="uk-card  uk-card-body uk-width-1-2")
                             div(class="uk-form-controls")
                                 input(class="uk-input uk-button", id="form-reject", type="submit", value="Reject Order", formaction="#{ticketNumber}/reject")
-        if user.CharacterName == characterName && status != 'Cancelled'
+        if user.CharacterName == characterName && status != 'Cancelled' && status != 'Accepted' && status != 'Rejected'
             form(method="post", class="uk-form-horizontal")
                 fieldset(class="uk-fieldset")
                     input(type="hidden", id="form-ticket-number", name="formTicketNumber", value=ticketNumber)
