@@ -42,7 +42,7 @@ router.get('/', async function(req, res, next) {
             if (materialList[category] == undefined) {
                 materialList[category] = {};
             }
-            materialList[category][materialNoSpace] = stockRef[material] || 0;
+            materialList[category][materialNoSpace] = stockRef[material] === undefined ? 0 : stockRef[material];
         }
     }
 
@@ -79,6 +79,8 @@ router.post('/', async function(req, res, next) {
             let inventory = Number(req.body[`form-${materialNoSpace}`]);
             if (inventory > 0) {
                 stockList[material] = inventory;
+            } else if (inventory === -1) {
+                stockList[material] = false;
             }
         }
     }
