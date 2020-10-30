@@ -18,7 +18,7 @@ async function updateStock(orderRef, isBuy) {
 
     for (let category in materials) {
         for (let material of materials[category]) {
-            if (cache.stockList[material]) {
+            if (cache.stockList[material] !== undefined && cache.stockList[material] !== false) {
                 cache.stockList[material] += orderRef[material] * (isBuy ? -1 : 1);
             }
         }
