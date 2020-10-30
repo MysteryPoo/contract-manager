@@ -54,6 +54,14 @@ router.post('/', async function(req, res, next) {
     const demandRefQuery = await db.collection(collections['Demand-List']).orderBy("DateTime", "desc").limit(1).get();
     const demandRef = demandRefQuery.docs[0].data();
 
+    let stockRef = cache.stockList;
+    if (!stockRef) {
+        const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+        
+        stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
+        cache.stockList = stockRef;
+    }
+
     let order = {
         'Price-DateTime': priceRef['DateTime'],
         'Demand-DateTime': demandRef['DateTime'],
@@ -88,6 +96,11 @@ router.post('/', async function(req, res, next) {
             order[material] = Number(req.body[`form-${materialNoSpace}`]);
             if (order[material] > 0) {
                 materialList[materialNoSpace] = order[material];
+                if (stockRef[material] < order[material]) {
+                    req.flash('error', `Unable to fill order. Not enough ${material}.`);
+                    res.redirect(`/buyOrder/${ticketNumber}`);
+                    return;
+                }
             }
         }
     }
