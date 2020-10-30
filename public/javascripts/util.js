@@ -170,3 +170,33 @@ document.onpaste = function(e) {
   
   return false; // Prevent the default handler from running.
 };
+
+$(document).ready(() => {
+    const stockURI = "/api/stock";
+    setInterval(() => {
+        const pathRegEx = /\/buyOrder.*/;
+        if (!window.location.pathname.match(pathRegEx)) {
+            return;
+        }
+        $.getJSON(stockURI, (result) => {
+            for (const [material, stock] of Object.entries(result)) {
+                let materialNoSpace = material.replace(/ /g, "");
+                if ($(`form-${materialNoSpace}`)) {
+                    let maxString = `Units In-Stock: ${stock.toLocaleString(undefined) || 'Disabled'}`;
+                    let oldStock = Number($(`#form-${materialNoSpace}`).attr('max'));
+                    if (oldStock != stock) {
+                        $(`#form-${materialNoSpace}`).attr({
+                            'max': stock || 0
+                        });
+                        $(`#form-label-${materialNoSpace}`).text(maxString);
+                        $(`#form-label-${materialNoSpace}`).addClass('uk-animation-shake');
+                        setTimeout(() => {
+                            $(`#form-label-${materialNoSpace}`).removeClass('uk-animation-shake');
+                        }, 500);
+                    }
+                }
+            }
+            
+        });
+    }, 1000);
+});

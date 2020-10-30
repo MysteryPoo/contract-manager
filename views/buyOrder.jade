@@ -53,8 +53,8 @@ block content
                     - let maxValue = "";
                     - if (stockList[key] || stockList[key] === false) maxValue = `${stockList[key] || 0}`;
                     - let maxString = "";
-                    - if (stockList[key] || stockList[key] === false) maxString = `In-Stock: ${stockList[key] || 'Disabled'}`;
-                    label(class="uk-form-label", for="form-#{key}") Units #{maxString}
+                    - if (stockList[key] || stockList[key] === false) maxString = `In-Stock: ${stockList[key].toLocaleString(undefined) || 'Disabled'}`;
+                    label(class="uk-form-label", id="form-label-#{key}", for="form-#{key}") Units #{maxString}
                     div(class="uk-form-controls")
                       input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", max=maxValue, value=unitCount, required="true")
       
