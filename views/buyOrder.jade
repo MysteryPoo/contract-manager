@@ -43,20 +43,21 @@ block content
           li
             div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin uk-animation-fade")
               each val, key in list
-                  div(class="uk-card uk-card-secondary uk-card-body")
-                    h3.uk-card-title #{key}
-                    img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                    p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
-                    p Demand: #{val['demand']}
-                    - let unitCount = '0';
-                    - if (val['units']) unitCount = `${val['units']}`;
-                    - let maxValue = "";
-                    - if (stockList[key] || stockList[key] === false) maxValue = `${stockList[key] || 0}`;
-                    - let maxString = "";
-                    - if (stockList[key] || stockList[key] === false) maxString = `In-Stock: ${stockList[key].toLocaleString(undefined) || 'Disabled'}`;
-                    label(class="uk-form-label", id="form-label-#{key}", for="form-#{key}") Units #{maxString}
-                    div(class="uk-form-controls")
-                      input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", max=maxValue, value=unitCount, required="true")
+                - let keyNoSpace = key.replace(/ /g, "");
+                div(class="uk-card uk-card-secondary uk-card-body")
+                  h3.uk-card-title #{key}
+                  img(width="100", height="", alt="", uk-img="data-src:/images/#{keyNoSpace}.png" class="uk-svg")
+                  p Price Offered: #{val['price'].toLocaleString(undefined)} ISK
+                  p Demand: #{val['demand']}
+                  - let unitCount = '0';
+                  - if (val['units']) unitCount = `${val['units']}`;
+                  - let maxValue = "";
+                  - if (stockList[key] || stockList[key] === false) maxValue = `${stockList[key] || 0}`;
+                  - let maxString = "";
+                  - if (stockList[key] || stockList[key] === false) maxString = `In-Stock: ${(stockList[key] ? stockList[key].toLocaleString(undefined) : false ) || 'Disabled'}`;
+                  label(class="uk-form-label", id="form-label-#{keyNoSpace}", for="form-#{keyNoSpace}") Units #{maxString}
+                  div(class="uk-form-controls")
+                    input(class="uk-input", id="form-#{keyNoSpace}", name="form-#{keyNoSpace}", type="number", min="0", max=maxValue, value=unitCount, required="true")
       
       div(class="uk-card uk-card-body uk-width-1-1")
         div(class="uk-form-controls")

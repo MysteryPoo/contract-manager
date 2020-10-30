@@ -182,7 +182,7 @@ $(document).ready(() => {
             for (const [material, stock] of Object.entries(result)) {
                 let materialNoSpace = material.replace(/ /g, "");
                 if ($(`form-${materialNoSpace}`)) {
-                    let maxString = `Units In-Stock: ${stock.toLocaleString(undefined) || 'Disabled'}`;
+                    let maxString = `Units In-Stock: ${(stock ? stock.toLocaleString(undefined) : false) || 'Disabled'}`;
                     let oldStock = Number($(`#form-${materialNoSpace}`).attr('max'));
                     if (oldStock != stock) {
                         $(`#form-${materialNoSpace}`).attr({
