@@ -73,4 +73,16 @@ router.get('/csv', async function(req, res, next) {
     res.send(returnValue);
   });
 
+  router.get('/stock', async function(req, res, next) {
+    let stockRef = cache.stockList;
+    if (!stockRef) {
+        const stockRefQuery = await db.collection(collections["Inventory"]).orderBy("DateTime", "desc").limit(1).get();
+        
+        stockRef = stockRefQuery.empty ? {} : stockRefQuery.docs[0].data();
+        cache.stockList = stockRef;
+    }
+    res.set('Content-Type', 'application/json');
+    res.send(cache.stockList);
+  });
+
 module.exports = router;
