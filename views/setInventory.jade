@@ -31,10 +31,12 @@ block content
                                 div(class="uk-card uk-card-body")
                                     h3(class="uk-card-title") #{key}
                                     img(width="100", height="", alt="", uk-img="data-src:/images/#{key}.png" class="uk-svg")
-                                    p Current Stock: #{val.toLocaleString(undefined)} Units
+                                    - let currentStock = val !== false ? `${val.toLocaleString(undefined)} Units` : 'Disabled';
+                                    - let storedValue = val !== false ? val : -1;
+                                    p Current Stock: #{currentStock}
                                     label(class="uk-form-label", for="form-#{key}") New Stock
                                     div(class="uk-form-controls")
-                                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="0", value="#{val}", required="true")
+                                        input(class="uk-input", id="form-#{key}", name="form-#{key}", type="number", min="-1", value="#{storedValue}", required="true")
             
             div(class="uk-card uk-card-body uk-width-1-1")
                 div(class="uk-form-controls")
