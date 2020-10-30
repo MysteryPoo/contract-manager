@@ -52,9 +52,9 @@ block content
                   - let unitCount = '0';
                   - if (val['units']) unitCount = `${val['units']}`;
                   - let maxValue = "";
-                  - if (stockList[key] || stockList[key] === false) maxValue = `${stockList[key] || 0}`;
+                  - if (stockList[key] !== undefined || stockList[key] === false) maxValue = `${stockList[key] || 0}`;
                   - let maxString = "";
-                  - if (stockList[key] || stockList[key] === false) maxString = `In-Stock: ${(stockList[key] ? stockList[key].toLocaleString(undefined) : false ) || 'Disabled'}`;
+                  - if (stockList[key] !== undefined || stockList[key] === false) maxString = `In-Stock: ${(stockList[key] ? stockList[key].toLocaleString(undefined) : false ) || 'Disabled'}`;
                   label(class="uk-form-label", id="form-label-#{keyNoSpace}", for="form-#{keyNoSpace}") Units #{maxString}
                   div(class="uk-form-controls")
                     input(class="uk-input", id="form-#{keyNoSpace}", name="form-#{keyNoSpace}", type="number", min="0", max=maxValue, value=unitCount, required="true")
