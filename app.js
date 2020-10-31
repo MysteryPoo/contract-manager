@@ -7,6 +7,9 @@ const admin = require('firebase-admin');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
+const redis = require('redis');
+const redisStore = require('connect-redis')(session);
+const { v4: uuid } = require('uuid');
 const methodOverride = require('method-override');
 const cache = require('./cache');
 
@@ -22,6 +25,16 @@ initializePassport(
   authentication.getUserByCharacterName,
   authentication.getUserById
 );
+
+const redisURI = process.env.debug ? process.env.REDIS : "localhost";
+const redisPort = process.env.debug ? process.env.REDISPORT : 6379;
+const redisClient = redis.createClient({
+  host: redisURI,
+  port: redisPort
+});
+redisClient.on('error', (err) => {
+  console.log('Redis error: ', err);
+});
 
 const indexRouter = require('./routes/menu');
 const pricesRouter = require('./routes/setPrices');
@@ -49,6 +62,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(session({
+  genid: (req) => {
+    return uuid();
+  },
+  store: new redisStore({ host: redisURI, port: redisPort, client: redisClient }),
+  name: '_redisSessionStore',
+  cookie: { secure: process.env.debug ? false : true, maxAge: 60000 * 30 },
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
