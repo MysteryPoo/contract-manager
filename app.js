@@ -26,7 +26,7 @@ initializePassport(
   authentication.getUserById
 );
 
-const redisURI = process.env.debug ? process.env.REDIS : "localhost";
+const redisURI = process.env.REDIS;
 const redisPort = process.env.debug ? process.env.REDISPORT : 6379;
 const redisClient = redis.createClient({
   host: redisURI,
