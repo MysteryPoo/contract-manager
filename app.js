@@ -67,7 +67,7 @@ app.use(session({
   },
   store: new redisStore({ host: redisURI, port: redisPort, client: redisClient }),
   name: '_redisSessionStore',
-  cookie: { secure: process.env.debug ? false : true, maxAge: 60000 * 30 },
+  cookie: { secure: process.env.debug ? false : true, maxAge: 60000 * 10},
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
@@ -92,9 +92,11 @@ app.use('/setInventory', checkAuthenticated, stockRouter);
 app.get('/logout', (req, res) => {
   if (req.user) {
     delete cache.users[req.user.id];
+    req.session.destroy(function (err) {
+      req.logout();
+      res.redirect('/');
+    });
   }
-  req.logOut();
-  res.redirect('/');
 });
 
 // catch 404 and forward to error handler
