@@ -67,7 +67,7 @@ app.use(session({
   },
   store: new redisStore({ host: redisURI, port: redisPort, client: redisClient }),
   name: '_redisSessionStore',
-  cookie: { secure: false, maxAge: 60000 * 10},
+  cookie: { secure: false, maxAge: 60000 * 30},
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
