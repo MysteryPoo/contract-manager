@@ -13,6 +13,10 @@ block content
         br
         h4 Fees to cover: #{Math.round(total*0.04 + total*0.025).toLocaleString(undefined)} ISK
         p (This is how much you need in your wallet for deposit/taxes)
+
+    div(class="uk-card uk-card-primary uk-card-body uk-margin")
+        h3(class="uk-card-title") Total stack count
+        h4= Object.keys(materialOrder).length
     
     div(class="uk-grid uk-child-width-auto uk-flex uk-flex-center uk-margin")
         each val, key in materialOrder
