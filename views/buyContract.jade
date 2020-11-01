@@ -3,8 +3,7 @@ extends layout
 block content
     if status === "Pending"
         div(class="uk-card uk-card-primary uk-card-body uk-margin")
-            h3(class="uk-card-title") Do NOT send contract In-Game
-            p (Expect a PM on Discord to let you know if the materials are available before you submit contract in-game.)
+            h3(class="uk-card-title") Send Contract to: #{contractContact}
         div(class="uk-card uk-card-primary uk-card-body uk-margin")
             h3(class="uk-card-title") Ticket Number: #{ticket}
             p (Please put this in your Contract Description)
