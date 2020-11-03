@@ -90,7 +90,9 @@ router.get('/', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
-    materialList: materialList
+    materialList: materialList,
+    priceTime: priceRef['DateTime'],
+    demandTime: demandRef['DateTime']
   });
     
 });

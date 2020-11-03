@@ -101,6 +101,8 @@ router.get('/', async function(req, res, next) {
     success: req.flash('success'),
     error: req.flash('error'),
     materialList: materialList,
+    priceTime: priceRef['DateTime'],
+    demandTime: demandRef['DateTime'],
     stockList: stockRef
   });
     

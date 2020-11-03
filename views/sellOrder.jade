@@ -1,6 +1,24 @@
 extends layout
 
 block content
+  if success.length > 0
+    for message in success
+      div(class="uk-alert-success", uk-alert)
+        a(class="uk-alert-close", uk-close)
+        p= message
+  if error.length > 0
+    for message in error
+      div(class="uk-alert-danger", uk-alert)
+        a(class="uk-alert-close", uk-close)
+        p= message
+  div(class="uk-flex uk-flex-center uk-margin")
+    div(class="uk-card uk-card-body uk-width-1-1")
+          h3(class="uk-card-title") Prices Updated On
+          p= new Date(priceTime)
+  div(class="uk-flex uk-flex-center uk-margin")
+    div(class="uk-card uk-card-body uk-width-1-1")
+          h3(class="uk-card-title") Demands Updated On
+          p= new Date(demandTime)
   form(action="/sellContract", method="post", class="uk-form-horizontal")
     fieldset.uk-fieldset
       if ticketNumber
