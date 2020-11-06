@@ -109,6 +109,12 @@ router.post('/', async function(req, res, next) {
     
     await db.collection(collections['Buy-Orders']).doc(ticketNumber.toString()).set(order);
 
+    if (Object.keys(materialList).length > 9) {
+        req.flash('error', 'Must not exceed nine (9) stacks for buy orders. Sorry for the inconvenience.');
+        res.redirect(`/buyOrder/${ticketNumber}`);
+        return;
+    }
+
     res.render('buyContract', {
         title: `${config['Organization']} Buy Contract -- Preview`,
         banner: process.env.banner,

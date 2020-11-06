@@ -102,7 +102,7 @@ router.get('/', async function(req, res, next) {
 router.get('/:ticketNumber', async function(req, res, next) {
 
   if (!req.user) {
-    req.flash('error', 'Unable to edit this order.');
+    req.flash('error', 'Unable to edit this order. You must be signed in.');
     res.redirect('/');
     return;
   }
