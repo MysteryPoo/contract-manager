@@ -199,6 +199,8 @@ router.get('/:ticketNumber', async function(req, res, next) {
     logo: process.env.logo,
     user: req.user,
     donate: config['Donation Enabled'],
+    success: req.flash('success'),
+    error: req.flash('error'),
     materialList: materialList,
     ticketNumber: ticketNumber
   });
